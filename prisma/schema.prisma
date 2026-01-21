@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  SHOP_MANAGER
+}
+
+model User {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  email         String     @unique
+  username      String     @unique
+  password      String
+  firstName     String?
+  lastName      String?
+  phone         String?
+  company       String?
+  taxId         String?
+  customerNotes String?
+  isActive      Boolean    @default(true)
+  emailVerified Boolean    @default(false)
+  roles         UserRole[] @default([CUSTOMER])
+
+  // Relations
+  billingAddress    Address? @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  billingAddressId  String?  @db.ObjectId
+  shippingAddress   Address? @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  shippingAddressId String?  @db.ObjectId
+
+  wishlist  WishlistItem[]
+  cartItems CartItem[]
+  orders    Order[]
+  reviews   ProductReview[]
+
+  // Marketing
+  marketingOptIn Boolean @default(false)
+
+  // Timestamps
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLogin     DateTime?
+  lastOrderDate DateTime?
+
+  @@index([email])
+  @@index([username])
+  @@index([roles])
+}
+
+model Address {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User[]
+  type      String // "billing" or "shipping"
+  firstName String?
+  lastName  String?
+  company   String?
+  address1  String
+  address2  String?
+  city      String
+  state     String
+  postcode  String
+  country   String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([user])
+}
+
+model WishlistItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  productId String   @db.ObjectId
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([productId])
+}
+
+model CartItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  productId String   @db.ObjectId
+  quantity  Int      @default(1)
+  addedAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([productId])
+}
+
+model Order {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String   @db.ObjectId
+  orderNumber String   @unique
+  total       Float
+  status      String // e.g., pending, processing, completed
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+model ProductReview {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  productId String   @db.ObjectId
+  rating    Int
+  review    String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([productId])
+}
