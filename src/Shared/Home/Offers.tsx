@@ -17,7 +17,7 @@ const Offers = () => {
                 loop={true}
                 aria-live="polite"
                 aria-label="Product Carousel"
-                className=" h-full w-full product-carousel"
+                className=" h-full w-full product-carousel hero-slider"
             >
                 <SwiperSlide>
                     <ProductCard />

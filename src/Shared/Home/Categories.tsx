@@ -1,6 +1,6 @@
 const Categories = () => {
     return (
-        <div className={`global-padding layout-container flex items-center justify-between gap-8`}>
+        <div className={`global-padding layout flex items-center justify-between gap-8`}>
             <div className={`group h-[300px] w-full flex items-center p-6 relative bg-[url('/banner1.webp')] bg-cover bg-center cursor-pointer`}>
                 <div className="z-50">
                     <div className="flex flex-col gap-4">

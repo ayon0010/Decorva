@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 import { rubik } from "@/Shared/font/Rubik";
+import Footer from "@/Shared/Foooter/footer";
+import NavBar from "@/Shared/Navbar/NavBar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +20,9 @@ export default function RootLayout({
       <body
         className={`${rubik.className} antialiased`}
       >
+        <NavBar />
         {children}
+        <Footer />
       </body>
     </html>
   );

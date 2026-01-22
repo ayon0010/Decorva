@@ -1,5 +1,6 @@
 import Categories from "@/Shared/Home/Categories";
 import Feature from "@/Shared/Home/Feature";
+import News from "@/Shared/Home/News";
 import Offers from "@/Shared/Home/Offers";
 import Products from "@/Shared/Home/Products";
 import Slider from "@/Shared/Home/Slider";
@@ -17,10 +18,13 @@ export default function Home() {
         <Title title="Our Products" className="text-center" />
         <Products />
       </section>
-      <section className="bg-[#F3F3F3] global-padding layout-container lg:py-20 py-10">
+      <section className="bg-[#F3F3F3] global-padding layout lg:py-20 py-10">
         <Title title="Today Deal" className="text-center" />
         <Offers />
       </section>
+      <div className="lg:my-20 my-10">
+        <News />
+      </div>
     </div>
   );
 }

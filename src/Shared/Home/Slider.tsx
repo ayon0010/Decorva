@@ -27,7 +27,7 @@ const Slider = () => {
 
     // Animation initiale au chargement
     useEffect(() => {
-        const tl = gsap.timeline({ delay: 0.1 });
+        const tl = gsap.timeline();
         
         if (titleRef1.current) {
             gsap.set(titleRef1.current, {
@@ -52,7 +52,7 @@ const Slider = () => {
                 opacity: 1,
                 duration: 1,
                 ease: "power3.out"
-            }, "-=0.3");
+            }, "<0.1");
         }
         
         if (buttonRef1.current) {
@@ -65,7 +65,7 @@ const Slider = () => {
                 opacity: 1,
                 duration: 1,
                 ease: "power3.out"
-            }, "-=0.3");
+            }, "<0.1");
         }
     }, []);
 
@@ -105,7 +105,7 @@ const Slider = () => {
                 opacity: 1,
                 duration: 1,
                 ease: "power3.out"
-            }, "-=0.3"); // Commence 0.5s avant la fin de l'animation précédente
+            }, "<0.1"); // Commence 0.1s après le début de l'animation précédente
         }
 
         if (currentButton) {
@@ -118,7 +118,7 @@ const Slider = () => {
                 opacity: 1,
                 duration: 1,
                 ease: "power3.out"
-            }, "-=0.3"); // Commence 0.5s avant la fin de l'animation précédente
+            }, "<0.1"); // Commence 0.1s après le début de l'animation précédente
         }
 
         // Réinitialiser les autres éléments hors écran
@@ -189,7 +189,7 @@ const Slider = () => {
                             priority={true}
                             className="object-cover object-center absolute inset-0 z-40"
                         />
-                        <div className="relative z-50 global-padding text-white flex flex-col gap-8">
+                        <div className="relative z-50 global-padding text-white flex flex-col gap-8 layout">
                             <h1 ref={titleRef1} className='uppercase text-black font-bold global-h1' >Top Sale</h1>
                             <p ref={descRef1} className='lg:text-[20px] text-base text-black leading-[100%]'>Discount <span className='text-primary'>20% Off</span> On All Products</p>
                             <button ref={buttonRef1} type='button' className='bg-primary text-white uppercase w-fit font-medium text-[15px] leading-[65px] px-8 rounded-[40px]'>
@@ -212,7 +212,7 @@ const Slider = () => {
                             priority={true}
                             className="object-cover object-center absolute inset-0 z-40"
                         />
-                        <div className="relative z-50 global-padding text-white flex flex-col gap-8">
+                        <div className="relative z-50 global-padding text-white flex flex-col gap-8 layout">
                             <h2 ref={titleRef2} className='uppercase text-black font-bold global-h1' >Big Sale</h2>
                             <p ref={descRef2} className='lg:text-[20px] text-base text-black leading-[100%]'>Discount <span className='text-primary'>20% Off</span> On All Products</p>
                             <button ref={buttonRef2} type='button' className='bg-primary text-white uppercase w-fit font-medium text-[15px] leading-[65px] px-8 rounded-[40px]'>
@@ -235,7 +235,7 @@ const Slider = () => {
                             priority={true}
                             className="object-cover object-center absolute inset-0 z-40"
                         />
-                        <div className="relative z-50 global-padding text-white flex flex-col gap-8">
+                        <div className="relative z-50 global-padding text-white flex flex-col gap-8 layout">
                             <h2 ref={titleRef3} className='uppercase text-black font-bold global-h1' >Lovely Plants</h2>
                             <p ref={descRef3} className='lg:text-[20px] text-base text-black leading-[100%]'>Discount <span className='text-primary'>20% Off</span> On All Products</p>
                             <button ref={buttonRef3} type='button' className='bg-primary text-white uppercase w-fit font-medium text-[15px] leading-[65px] px-8 rounded-[40px]'>

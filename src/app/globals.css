@@ -114,3 +114,24 @@ body {
     left: 50%;
     transform: translateX(-50%);
 }
+
+
+.footer-title {
+  font-size: 14px;
+  line-height: 16px;
+  margin-bottom: 31px;
+  padding-bottom: 10px;
+  text-transform: uppercase;
+  font-weight: 500;
+  position: relative;
+}
+
+.footer-title::before {
+  content: "";
+  width: 35px;
+  height: 2px;
+  background-color: #222222;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
