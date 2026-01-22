@@ -8,16 +8,30 @@ import 'swiper/css/navigation';
 
 const Offers = () => {
     return (
-        <div className='mt-10'>
+        <div className='mt-10 w-full'>
             <Swiper
                 modules={[Navigation]}
-                spaceBetween={0}
-                slidesPerView={4}
+                spaceBetween={20}
+                slidesPerView={1}
+                breakpoints={{
+                    640: {
+                        slidesPerView: 2,
+                    },
+                    768: {
+                        slidesPerView: 3,
+                    },
+                    1024: {
+                        slidesPerView: 4,
+                    },
+                    1536: {
+                        slidesPerView: 5,
+                    },
+                }}
                 navigation={true}
                 loop={true}
                 aria-live="polite"
                 aria-label="Product Carousel"
-                className=" h-full w-full product-carousel hero-slider"
+                className="product-carousel hero-slider"
             >
                 <SwiperSlide>
                     <ProductCard />

@@ -5,7 +5,7 @@ import { lora } from '../font/Rubik';
 const Footer = () => {
     return (
         <footer className='bg-[#F2F5F1]'>
-            <div className='global-padding layout flex items-start justify-between py-10 lg:py-20'>
+            <div className='global-padding layout grid lg:grid-cols-[1fr_1fr_2fr_1fr_1fr] gap-10 py-10 lg:py-20'>
                 <div>
                     <h3 className='footer-title'>Opening Time</h3>
                     <ul className='space-y-2'>
@@ -30,7 +30,7 @@ const Footer = () => {
                 <div>
                     <h2 className='global-h2 text-center'>Decorva</h2>
                     <div>
-                        <ul className='flex items-center gap-4 mt-6'>
+                        <ul className='flex items-center justify-center gap-4 mt-6'>
                             <li>
                                 <Link href={"/"} className='inline-block text-sm leading-[30px]'>
                                     Payment

@@ -18,9 +18,11 @@ export default function Home() {
         <Title title="Our Products" className="text-center" />
         <Products />
       </section>
-      <section className="bg-[#F3F3F3] global-padding layout lg:py-20 py-10">
-        <Title title="Today Deal" className="text-center" />
-        <Offers />
+      <section className="bg-[#F3F3F3] lg:py-20 py-10">
+        <div className="layout global-padding">
+          <Title title="Today Deal" className="text-center" />
+          <Offers />
+        </div>
       </section>
       <div className="lg:my-20 my-10">
         <News />
