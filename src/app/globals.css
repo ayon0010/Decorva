@@ -213,3 +213,18 @@ left: 8px;             /* leave room for thumb radius */
 .product-title {
   @apply capitalize leading-[20px] text-[22px] font-normal mb-[22px]
 }
+
+
+.global-b-bottom {
+  border-bottom: 2px solid;
+  border-image: repeating-linear-gradient(
+      to right,
+      #999 0,
+      #999 10px,
+      transparent 10px,
+      transparent 20px
+    )
+    100%;
+  border-image-slice: 1;
+  border-width: 0 0 2px 0;
+}

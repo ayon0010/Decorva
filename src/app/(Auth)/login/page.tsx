@@ -32,10 +32,10 @@ const LoginPage = () => {
                     </div>
                     <form className='flex flex-col gap-4'>
                         <div>
-                            <input type='email' id='email' placeholder='Enter your email' className='w-full p-4 rounded-lg border border-black/70 placeholder:text-base text-base' />
+                            <input type='email' id='email' placeholder='Enter your email' className='w-full p-4 rounded-sm border border-black/70 placeholder:text-base text-base' />
                         </div>
                         <div>
-                            <input type='password' id='password' placeholder='Enter your password' className='w-full p-4 rounded-lg border border-black/70 placeholder:text-base text-base' />
+                            <input type='password' id='password' placeholder='Enter your password' className='w-full p-4 rounded-sm border border-black/70 placeholder:text-base text-base' />
                         </div>
                         <button className='w-full bg-primary text-white py-3 px-4 rounded-sm transition-all duration-300 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]' type='submit'>Login</button>
                     </form>
