@@ -11,7 +11,6 @@ import { RegisterSchema } from '@/Shared/Schema/LoginSchema';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Swal from 'sweetalert2'
-import { signIn } from '@/lib/auth';
 
 export type RegisterFormData = z.infer<typeof RegisterSchema>;
 
@@ -25,6 +24,14 @@ const RegisterPage = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
     const onSubmit = async (data: RegisterFormData) => {
+        Swal.fire({
+            title: 'Loading...',
+            text: 'Please wait',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
         const response = await fetch('/api/register', {
             method: 'POST',
             body: JSON.stringify(data),
@@ -32,20 +39,32 @@ const RegisterPage = () => {
         const result = await response.json();
 
         if (result.success) {
-            await signIn('credentials', {
-                email: data.email,
-                password: data.password,
-                redirect: true,
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                body: JSON.stringify(data),
             });
-            Swal.fire({
-                icon: "success",
-                title: "Success!",
-                text: result.message,
-                showConfirmButton: false,
-                timer: 2000,
-            });
+            const loginResult = await response.json();
+            if (loginResult.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Success!",
+                    text: result.message,
+                    showConfirmButton: false,
+                    timer: 2000,
+                });
+                router.push('/');
+            }
+            else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: result.message,
+                    showConfirmButton: false,
+                    timer: 2000,
+                });
+                router.push('/login');
+            }
             reset();
-            router.push('/');
         }
         else {
             Swal.fire({

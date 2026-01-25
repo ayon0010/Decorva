@@ -4,10 +4,27 @@ import React, { useState } from 'react'
 import Orders from '../../../Shared/Orders/Orders';
 import ForgotPass from '@/Shared/ForgotPassword/ForgotPass';
 import Information from '@/Shared/My-Profile/Information';
+import { signOut } from "next-auth/react";
+import Swal from 'sweetalert2';
 
 const MyAccountPage = () => {
     const [activeIndex, setActiveIndex] = useState<number>(0);
 
+    const handleLogOut = async () => {
+        Swal.fire({
+            title: 'Logging out...',
+            text: 'Please wait',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        await signOut({
+            redirect: true,
+            callbackUrl: '/'
+        });
+    }
+    
     return (
         <div>
             <PageTitle title='My Account' subTitle='home / My account' />
@@ -18,7 +35,7 @@ const MyAccountPage = () => {
                             <li className={`text-white py-3 px-4 rounded-sm font-medium cursor-pointer hover:bg-primary transition-all duration-200 ease-in ${activeIndex === 0 ? 'bg-primary' : 'bg-[#222222]'}`} onClick={() => setActiveIndex(0)}>Information</li>
                             <li className={`text-white py-3 px-4 rounded-sm font-medium cursor-pointer hover:bg-primary transition-all duration-200 ease-in ${activeIndex === 1 ? 'bg-primary' : 'bg-[#222222]'}`} onClick={() => setActiveIndex(1)}>Order</li>
                             <li className={`text-white py-3 px-4 rounded-sm font-medium cursor-pointer hover:bg-primary transition-all duration-200 ease-in ${activeIndex === 2 ? 'bg-primary' : 'bg-[#222222]'}`} onClick={() => setActiveIndex(2)}>Forgot Password</li>
-                            <li className={`text-white py-3 px-4 rounded-sm font-medium cursor-pointer hover:bg-primary transition-all duration-200 ease-in ${activeIndex === 3 ? 'bg-primary' : 'bg-[#222222]'}`} onClick={() => setActiveIndex(3)}>Logout</li>
+                            <li onClick={() => handleLogOut()} className={`text-white py-3 px-4 rounded-sm font-medium cursor-pointer hover:bg-primary transition-all duration-200 ease-in ${activeIndex === 3 ? 'bg-primary' : 'bg-[#222222]'}`}>Logout</li>
                         </ul>
                     </div>
                     <div className='flex-1'>

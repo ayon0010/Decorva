@@ -23,12 +23,19 @@ const LoginPage = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     const onSubmit = async (data: LoginFormData) => {
+        Swal.fire({
+            title: 'Loading...',
+            text: 'Please wait',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
         const response = await fetch('/api/login', {
             method: 'POST',
             body: JSON.stringify(data),
         });
         const result = await response.json();
-        console.log(result);
 
         if (result.success) {
             Swal.fire({
@@ -38,6 +45,7 @@ const LoginPage = () => {
                 showConfirmButton: false,
                 timer: 2000,
             });
+            reset();
             router.push('/');
         }
         else {
@@ -49,7 +57,6 @@ const LoginPage = () => {
                 timer: 2000,
             });
         }
-        reset();
     };
 
     return (
@@ -84,18 +91,20 @@ const LoginPage = () => {
                             />
                             {errors.email && <p className='text-red-500 text-sm mt-1'>{errors.email.message}</p>}
                         </div>
-                        <div className='relative'>
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                id='password'
-                                placeholder='Enter your password'
-                                className='w-full p-4 rounded-sm border border-black/70 placeholder:text-base text-base'
-                                {...register('password')}
-                            />
-                            {showPassword ?
-                                <EyeIcon className='w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer' onClick={() => setShowPassword(!showPassword)} /> :
-                                <EyeOff className='w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer' onClick={() => setShowPassword(!showPassword)} />
-                            }
+                        <div>
+                            <div className='relative'>
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    id='password'
+                                    placeholder='Enter your password'
+                                    className='w-full p-4 rounded-sm border border-black/70 placeholder:text-base text-base'
+                                    {...register('password')}
+                                />
+                                {showPassword ?
+                                    <EyeIcon className='w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer' onClick={() => setShowPassword(!showPassword)} /> :
+                                    <EyeOff className='w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer' onClick={() => setShowPassword(!showPassword)} />
+                                }
+                            </div>
                             {errors.password && <p className='text-red-500 text-sm mt-1'>{errors.password.message}</p>}
                         </div>
                         <button className='w-full bg-primary text-white py-3 px-4 rounded-sm transition-all duration-300 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]' type='submit'>Login</button>

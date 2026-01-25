@@ -66,6 +66,7 @@ model BillingAddress {
   postcode  String
   country   String
   phone     String?
+  email     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User?
@@ -83,6 +84,7 @@ model ShippingAddress {
   postcode  String
   country   String
   phone     String?
+  email     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User?

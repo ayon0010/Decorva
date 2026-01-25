@@ -6,8 +6,17 @@ import authConfig from "./lib/auth-config";
 const { auth } = NextAuth(authConfig)
 export default auth(async function proxy(req) {
     const isLoggedIn = !!req.auth;
-    console.log(isLoggedIn);
-    
+    const protectedRoutes = ['/my-account'];
+    const pathName = req.nextUrl.pathname;
+
+    if (protectedRoutes.includes(pathName) && !isLoggedIn) {
+        return NextResponse.redirect(new URL('/login', req.url))
+    }
+
+    if (pathName === '/login' && isLoggedIn) {
+        return NextResponse.redirect(new URL('/my-account', req.url))
+    }
+
     // console.log(req.auth, 'auth from middleware');
 
     // if (!isLoggedIn) {
