@@ -11,7 +11,7 @@ const OrderDetails = ({ order }: { order: any }) => {
     const [isOpen, setIsOpen] = useState(false);
     const orderRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
-    const iconRef = useRef<SVGAElement>(null);
+    const iconRef = useRef(null);
 
     useGSAP(() => {
         if (!orderRef.current) return;

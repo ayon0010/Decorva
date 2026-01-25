@@ -5,12 +5,12 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -20,25 +20,22 @@ enum UserRole {
 }
 
 model User {
-  id            String     @id @default(auto()) @map("_id") @db.ObjectId
-  email         String     @unique
-  username      String     @unique
-  password      String
-  firstName     String?
-  lastName      String?
-  phone         String?
-  company       String?
-  taxId         String?
-  customerNotes String?
-  isActive      Boolean    @default(true)
-  emailVerified Boolean    @default(false)
-  roles         UserRole[] @default([CUSTOMER])
-
-  // Relations
-  billingAddress    Address? @relation("BillingAddress", fields: [billingAddressId], references: [id])
-  billingAddressId  String?  @db.ObjectId
-  shippingAddress   Address? @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
-  shippingAddressId String?  @db.ObjectId
+  id                String           @id @default(auto()) @map("_id") @db.ObjectId
+  email             String           @unique
+  password          String
+  firstName         String?
+  lastName          String?
+  phone             String?
+  company           String?
+  taxId             String?
+  customerNotes     String?
+  isActive          Boolean          @default(true)
+  emailVerified     Boolean          @default(false)
+  roles             UserRole[]       @default([CUSTOMER])
+  billingAddress    BillingAddress?  @relation(fields: [billingAddressId], references: [id])
+  billingAddressId  String?          @db.ObjectId @unique
+  shippingAddress   ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressId String?          @db.ObjectId @unique
 
   wishlist  WishlistItem[]
   cartItems CartItem[]
@@ -54,15 +51,11 @@ model User {
   lastLogin     DateTime?
   lastOrderDate DateTime?
 
-  @@index([email])
-  @@index([username])
   @@index([roles])
 }
 
-model Address {
+model BillingAddress {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  user      User[]
-  type      String // "billing" or "shipping"
   firstName String?
   lastName  String?
   company   String?
@@ -75,8 +68,24 @@ model Address {
   phone     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User?
+}
 
-  @@index([user])
+model ShippingAddress {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  firstName String?
+  lastName  String?
+  company   String?
+  address1  String
+  address2  String?
+  city      String
+  state     String
+  postcode  String
+  country   String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User?
 }
 
 model WishlistItem {

@@ -1,14 +1,57 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image';
 import loginImage from "@/../public/login-image.png"
 import { lora } from '@/Shared/font/Rubik';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, EyeIcon, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { LoginFormSchema } from '@/Shared/Schema/LoginSchema';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Swal from 'sweetalert2';
+
+export type LoginFormData = z.infer<typeof LoginFormSchema>;
 
 const LoginPage = () => {
     const router = useRouter();
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<LoginFormData>({
+        resolver: zodResolver(LoginFormSchema),
+    });
+
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+
+    const onSubmit = async (data: LoginFormData) => {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        console.log(result);
+
+        if (result.success) {
+            Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: result.message,
+                showConfirmButton: false,
+                timer: 2000,
+            });
+            router.push('/');
+        }
+        else {
+            Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: result.message,
+                showConfirmButton: false,
+                timer: 2000,
+            });
+        }
+        reset();
+    };
+
     return (
         <div className='w-hull h-dvh flex bg-[#F1FAEC] relative overflow-hidden'>
             <Image src={loginImage} width={1000} height={1000} alt='login-Decorva' className='aspect-auto object-contain absolute left-0 bottom-0 lg:w-[750px] 2xl:w-[1000px]' />
@@ -30,12 +73,30 @@ const LoginPage = () => {
                             <ArrowLeft className='w-4 h-4' /> Back
                         </button>
                     </div>
-                    <form className='flex flex-col gap-4'>
+                    <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
                         <div>
-                            <input type='email' id='email' placeholder='Enter your email' className='w-full p-4 rounded-sm border border-black/70 placeholder:text-base text-base' />
+                            <input
+                                type='email'
+                                id='email'
+                                placeholder='Enter your email'
+                                className='w-full p-4 rounded-sm border border-black/70 placeholder:text-base text-base'
+                                {...register('email')}
+                            />
+                            {errors.email && <p className='text-red-500 text-sm mt-1'>{errors.email.message}</p>}
                         </div>
-                        <div>
-                            <input type='password' id='password' placeholder='Enter your password' className='w-full p-4 rounded-sm border border-black/70 placeholder:text-base text-base' />
+                        <div className='relative'>
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                id='password'
+                                placeholder='Enter your password'
+                                className='w-full p-4 rounded-sm border border-black/70 placeholder:text-base text-base'
+                                {...register('password')}
+                            />
+                            {showPassword ?
+                                <EyeIcon className='w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer' onClick={() => setShowPassword(!showPassword)} /> :
+                                <EyeOff className='w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer' onClick={() => setShowPassword(!showPassword)} />
+                            }
+                            {errors.password && <p className='text-red-500 text-sm mt-1'>{errors.password.message}</p>}
                         </div>
                         <button className='w-full bg-primary text-white py-3 px-4 rounded-sm transition-all duration-300 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]' type='submit'>Login</button>
                     </form>
