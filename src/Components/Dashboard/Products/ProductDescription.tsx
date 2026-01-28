@@ -1,12 +1,41 @@
 "use client";
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useEditor, EditorContent, Editor, useEditorState } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
-import { AlignCenter, AlignLeft, AlignRight, Italic, List, ListOrdered, Quote, Strikethrough } from "lucide-react";
+import Link from '@tiptap/extension-link'
+import Color from '@tiptap/extension-color'
+import { AlignCenter, AlignLeft, AlignRight, Italic, List, ListOrdered, Quote, Strikethrough, Link as LinkIcon, Minus, Palette, Clipboard, Eraser, Type, IndentDecrease, IndentIncrease, Undo2, Redo2 } from "lucide-react";
+import { Indent } from "./Indent";
 
 
-const MenuBar = ({ editor }: { editor: Editor | null }) => {
+const MenuBar = ({ editor, pasteAsTextMode, setPasteAsTextMode }: { editor: Editor | null, pasteAsTextMode: boolean, setPasteAsTextMode: (value: boolean) => void }) => {
+    const [showColorPicker, setShowColorPicker] = useState(false)
+    const [showSpecialChars, setShowSpecialChars] = useState(false)
+    const [customColor, setCustomColor] = useState('#000000')
+    const colorPickerRef = useRef<HTMLDivElement>(null)
+    const specialCharsRef = useRef<HTMLDivElement>(null)
+
+    // Close modals when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (colorPickerRef.current && !colorPickerRef.current.contains(event.target as Node)) {
+                setShowColorPicker(false)
+            }
+            if (specialCharsRef.current && !specialCharsRef.current.contains(event.target as Node)) {
+                setShowSpecialChars(false)
+            }
+        }
+
+        if (showColorPicker || showSpecialChars) {
+            document.addEventListener('mousedown', handleClickOutside)
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [showColorPicker, showSpecialChars])
+
     const editorState = useEditorState({
         editor,
         selector: ctx => {
@@ -34,14 +63,45 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
                 isAlignLeft: ctx?.editor?.isActive({ textAlign: 'left' }) ?? false,
                 isAlignCenter: ctx?.editor?.isActive({ textAlign: 'center' }) ?? false,
                 isAlignRight: ctx?.editor?.isActive({ textAlign: 'right' }) ?? false,
+                isLink: ctx?.editor?.isActive('link') ?? false,
+                currentColor: ctx?.editor?.getAttributes('textStyle').color || null,
                 canUndo: ctx?.editor?.can().chain().undo().run() ?? false,
                 canRedo: ctx?.editor?.can().chain().redo().run() ?? false,
             }
         },
     })
 
+    // Update custom color when editor color changes - use callback to avoid effect warning
+    const currentEditorColor = editorState?.currentColor
+    if (currentEditorColor && currentEditorColor !== customColor) {
+        // Update synchronously when color changes, this is intentional
+        setCustomColor(currentEditorColor)
+    }
+
+    const colors = [
+        '#000000', '#333333', '#666666', '#999999', '#CCCCCC', '#FFFFFF',
+        '#FF0000', '#FF6600', '#FFCC00', '#00FF00', '#0066FF', '#0000FF',
+        '#6600FF', '#FF00FF', '#FF0066', '#00FFFF', '#79A206'
+    ]
+
+    const specialChars = [
+        '©', '®', '™', '€', '£', '¥', '$', '¢', '°', '±', '×', '÷',
+        '¼', '½', '¾', '⅓', '⅔', '⅛', '⅜', '⅝', '⅞', '∞', '≈', '≠',
+        '≤', '≥', '±', '∑', '∏', '√', '∫', '∆', '∇', 'α', 'β', 'γ',
+        'δ', 'ε', 'θ', 'λ', 'μ', 'π', 'σ', 'φ', 'ω', '→', '←', '↑',
+        '↓', '↔', '⇒', '⇐', '⇑', '⇓', '•', '○', '●', '▪', '▫', '■',
+        '□', '▲', '△', '▼', '▽', '◆', '◇', '★', '☆', '♠', '♣', '♥',
+        '♦', '♪', '♫', '☀', '☁', '☂', '☃', '☎', '☐', '☑', '☒', '✓',
+        '✗', '✘', '✕', '✖', '✗', '✘', '✕', '✖'
+    ]
+
+    const handleSpecialCharClick = (char: string) => {
+        editor?.chain().focus().insertContent(char).run()
+        setShowSpecialChars(false)
+    }
+
     return (
-        <div className="control-group">
+        <div className="control-group border-b border-b-black/30">
             <div className="button-group flex gap-2 flex-wrap px-3">
                 <button
                     type="button"
@@ -117,7 +177,216 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
                 >
                     <AlignRight className="w-4 h-4" />
                 </button>
-        
+                <button
+                    title="Insert link"
+                    type="button"
+                    onClick={() => {
+                        const previousUrl = editor?.getAttributes('link').href
+                        const url = window.prompt('Enter URL:', previousUrl || '')
+                        if (url === null) {
+                            return
+                        }
+                        if (url === '') {
+                            editor?.chain().focus().extendMarkRange('link').unsetLink().run()
+                            return
+                        }
+                        editor?.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+                    }}
+                    className={`${editorState?.isLink ? 'is-active' : 'text-black/50'} cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150`}
+                >
+                    <LinkIcon className="w-4 h-4" />
+                </button>
+                <button
+                    title="Remove link"
+                    type="button"
+                    onClick={() => editor?.chain().focus().unsetLink().run()}
+                    disabled={!editorState?.isLink}
+                    className={`text-black/50 cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150 disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                    <LinkIcon className="w-4 h-4 rotate-45" />
+                </button>
+                <button
+                    title="Horizontal line"
+                    type="button"
+                    onClick={() => editor?.chain().focus().setHorizontalRule().run()}
+                    className="text-black/50 cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150"
+                >
+                    <Minus className="w-4 h-4" />
+                </button>
+                <div className="relative" ref={colorPickerRef}>
+                    <button
+                        title={`Text color${editorState?.currentColor ? `: ${editorState.currentColor}` : ''}`}
+                        type="button"
+                        onClick={() => setShowColorPicker(!showColorPicker)}
+                        className={`${editorState?.currentColor ? 'is-active' : 'text-black/50'} cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150`}
+                    >
+                        <Palette
+                            className="w-4 h-4"
+                            style={editorState?.currentColor ? { color: editorState.currentColor } : undefined}
+                        />
+                    </button>
+                    {showColorPicker && (
+                        <div className="absolute top-full left-0 mt-1 bg-white border border-black/30 rounded-sm p-2 shadow-lg z-10 min-w-[200px]">
+                            <div className="grid grid-cols-6 gap-1">
+                                {colors.map((color) => (
+                                    <button
+                                        key={color}
+                                        type="button"
+                                        onClick={() => {
+                                            editor?.chain().focus().setColor(color).run()
+                                            setShowColorPicker(false)
+                                        }}
+                                        className="w-6 h-6 rounded-sm border border-black/20 hover:border-primary cursor-pointer"
+                                        style={{ backgroundColor: color }}
+                                        title={color}
+                                    />
+                                ))}
+                            </div>
+                            <div className="mt-3 pt-3 border-t border-black/20">
+                                <label className="text-xs text-black/70 mb-1 block">Custom Color</label>
+                                <div className="flex gap-2 items-center">
+                                    <input
+                                        title="Custom color"
+                                        type="color"
+                                        value={customColor}
+                                        onChange={(e) => {
+                                            setCustomColor(e.target.value)
+                                            editor?.chain().focus().setColor(e.target.value).run()
+                                        }}
+                                        className="w-10 h-8 border border-black/30 rounded-sm cursor-pointer"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={customColor}
+                                        onChange={(e) => {
+                                            const value = e.target.value
+                                            if (/^#[0-9A-Fa-f]{0,6}$/.test(value)) {
+                                                setCustomColor(value)
+                                                if (value.length === 7) {
+                                                    editor?.chain().focus().setColor(value).run()
+                                                }
+                                            }
+                                        }}
+                                        placeholder="#000000"
+                                        className="flex-1 text-xs px-2 py-1 border border-black/30 rounded-sm focus:outline-none focus:border-primary"
+                                        maxLength={7}
+                                    />
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    editor?.chain().focus().unsetColor().run()
+                                    setShowColorPicker(false)
+                                }}
+                                className="mt-2 w-full text-xs py-1 px-2 border border-black/30 rounded-sm hover:bg-gray-100"
+                            >
+                                Reset
+                            </button>
+                        </div>
+                    )}
+                </div>
+                <button
+                    title={pasteAsTextMode ? "Paste as text (ON)" : "Paste as text (OFF)"}
+                    type="button"
+                    onClick={() => setPasteAsTextMode(!pasteAsTextMode)}
+                    className={`${pasteAsTextMode ? 'is-active' : 'text-black/50'} cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150`}
+                >
+                    <Clipboard className="w-4 h-4" />
+                </button>
+                <button
+                    title="Clear formatting"
+                    type="button"
+                    onClick={() => {
+                        editor?.chain().focus().clearNodes().unsetAllMarks().run()
+                    }}
+                    className="text-black/50 cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150"
+                >
+                    <Eraser className="w-4 h-4" />
+                </button>
+                <div className="relative" ref={specialCharsRef}>
+                    <button
+                        title="Special characters"
+                        type="button"
+                        onClick={() => setShowSpecialChars(!showSpecialChars)}
+                        className="text-black/50 cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150"
+                    >
+                        <Type className="w-4 h-4" />
+                    </button>
+                    {showSpecialChars && (
+                        <div className="absolute top-full left-0 mt-1 bg-white border border-black/30 rounded-sm p-3 shadow-lg z-10 max-h-64 overflow-y-auto w-64">
+                            <div className="grid grid-cols-8 gap-1">
+                                {specialChars.map((char, index) => (
+                                    <button
+                                        key={index}
+                                        type="button"
+                                        onClick={() => handleSpecialCharClick(char)}
+                                        className="w-8 h-8 flex items-center justify-center border border-black/20 hover:border-primary hover:bg-gray-100 rounded-sm text-sm"
+                                    >
+                                        {char}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+                <button title="Increase indent" onClick={() => editor?.chain().focus().indent().run()} className="text-black/50 cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150">
+                    <IndentIncrease className="w-4 h-4" />
+                </button>
+
+                <button title="Decrease indent" onClick={() => editor?.chain().focus().outdent().run()} className="text-black/50 cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150">
+                    <IndentDecrease className="w-4 h-4" />
+                </button>
+                <button
+                    title="Undo"
+                    type="button"
+                    onClick={() => editor?.chain().focus().undo().run()}
+                    disabled={!editorState?.canUndo}
+                    className="text-black/50 cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <Undo2 className="w-4 h-4" />
+                </button>
+                <button
+                    title="Redo"
+                    type="button"
+                    onClick={() => editor?.chain().focus().redo().run()}
+                    disabled={!editorState?.canRedo}
+                    className="text-black/50 cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <Redo2 className="w-4 h-4" />
+                </button>
+                <button
+                    title="Paragraph"
+                    type="button"
+                    onClick={() => editor?.chain().focus().setParagraph().run()}
+                    className={`${editorState?.isParagraph ? 'is-active' : 'text-black/50'} cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150`}
+                >
+                    P
+                </button>
+                <button
+                    title="Heading 1"
+                    type="button"
+                    onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}
+                    className={`${editorState?.isHeading1 ? 'is-active' : 'text-black/50'} cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150 font-bold`}
+                >
+                    H1
+                </button>
+                <button
+                    title="Heading 2"
+                    type="button"
+                    onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}
+                    className={`${editorState?.isHeading2 ? 'is-active' : 'text-black/50'} cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150 font-bold`}
+                >
+                    H2
+                </button>
+                <button
+                    title="Heading 3"
+                    type="button"
+                    onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()}
+                    className={`${editorState?.isHeading3 ? 'is-active' : 'text-black/50'} cursor-pointer border-2 hover:border-primary border-white w-8 h-8 flex items-center justify-center rounded-sm transition-all duration-300 delay-150 font-bold`}
+                >
+                    H3
+                </button>
                 {/* <button
                     onClick={() => editor?.chain().focus().toggleCode().run()}
                     disabled={!editorState?.canCode}
@@ -199,27 +468,57 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
 
 
 const ProductDescription = () => {
+    const [pasteAsTextMode, setPasteAsTextMode] = useState(false)
+    const pasteModeRef = useRef(pasteAsTextMode)
+
+    useEffect(() => {
+        pasteModeRef.current = pasteAsTextMode
+    }, [pasteAsTextMode])
+
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            StarterKit.configure({
+                heading: {
+                    levels: [1, 2, 3, 4, 5, 6],
+                },
+            }),
+            Indent,
             TextAlign.configure({
                 types: ['heading', 'paragraph'],
             }),
+            Link.configure({
+                openOnClick: false,
+                HTMLAttributes: {
+                    class: 'text-primary underline',
+                },
+            }),
+            Color,
         ],
         content: '',
         immediatelyRender: false,
         editorProps: {
             attributes: {
                 class: "p-3 h-[400px] focus:outline-none"
-            }
-        }
+            },
+            handlePaste: (view, event) => {
+                if (pasteModeRef.current) {
+                    event.preventDefault()
+                    const text = event.clipboardData?.getData('text/plain') || ''
+                    if (text && editor) {
+                        editor.chain().focus().insertContent(text).run()
+                    }
+                    return true
+                }
+                return false
+            },
+        },
     })
     return (
         <div className="bg-white flex flex-col gap-2 border border-black/30">
             <div className="text-base border-b border-b-black/30 p-3">
                 Product Description
             </div>
-            <MenuBar editor={editor} />
+            <MenuBar editor={editor} pasteAsTextMode={pasteAsTextMode} setPasteAsTextMode={setPasteAsTextMode} />
             <div className="">
                 <EditorContent editor={editor} />
             </div>
