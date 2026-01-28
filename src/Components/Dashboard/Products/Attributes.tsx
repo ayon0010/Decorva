@@ -10,7 +10,7 @@ const Attributes = () => {
                 >
                     Add New
                 </button>
-                <input type="text" placeholder='Search for an attribute' className='border px-2 py-1 border-black/50 rounded-sm w-full max-w-[150px] placeholder:text-xs' />
+                <input type="text" placeholder='Search for an attribute' className='border px-2 py-1 border-black/30 rounded-sm w-full max-w-[150px] placeholder:text-xs' />
             </div>
         </div>
     )

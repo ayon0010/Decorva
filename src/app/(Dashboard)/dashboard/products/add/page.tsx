@@ -4,7 +4,9 @@ import Attributes from '@/Components/Dashboard/Products/Attributes';
 import General from '@/Components/Dashboard/Products/General';
 import Inventory from '@/Components/Dashboard/Products/Inventory';
 import LinkedProducts from '@/Components/Dashboard/Products/LinkedProducts';
+import ProductBrand from '@/Components/Dashboard/Products/ProductBrand';
 import ProductCategories from '@/Components/Dashboard/Products/ProductCategories';
+import ProductTags from '@/Components/Dashboard/Products/ProductTags';
 import Shipping from '@/Components/Dashboard/Products/Shipping';
 import { Box, Link, Settings, ShieldCheck, Tag, Truck } from 'lucide-react';
 import Image from 'next/image';
@@ -43,7 +45,7 @@ const AddProductPage = () => {
             <h2 className='text-2xl mb-4'>Add new product</h2>
             <div className='w-full flex items-start justify-between gap-6'>
                 <aside className='w-3/4 flex flex-col gap-4'>
-                    <input type="text" placeholder='Product name' className='w-full p-2 border border-black/50 rounded-sm' />
+                    <input type="text" placeholder='Product name' className='w-full p-2 border border-black/30 rounded-sm' />
                     <div className='border border-black/30'>
                         <div className='flex items-center border-b border-black/30 gap-2 py-2 px-3'>
                             <h3>Product Data -</h3>
@@ -60,7 +62,7 @@ const AddProductPage = () => {
                         </div>
                         <div className='flex items-stretch justify-between'>
                             <div className='w-[30%] border-r border-black/30 bg-[#FAFAFA]'>
-                                <div className={`flex items-center pl-2 py-2 gap-1 border-b border-black/50 cursor-pointer ${activeTab === 0 ? 'bg-[#EEEEEE] text-black/80' : 'bg-[#FAFAFA] text-primary'}`} onClick={() => setActiveTab(0)}>
+                                <div className={`flex items-center pl-2 py-2 gap-1 border-b border-black/30 cursor-pointer ${activeTab === 0 ? 'bg-[#EEEEEE] text-black/80' : 'bg-[#FAFAFA] text-primary'}`} onClick={() => setActiveTab(0)}>
                                     <Settings className='w-3 h-3' />
                                     <span>General</span>
                                 </div>
@@ -298,6 +300,8 @@ const AddProductPage = () => {
                         </div>
                     </div>
                     <ProductCategories />
+                    <ProductTags />
+                    <ProductBrand />
                 </aside>
             </div>
         </section>

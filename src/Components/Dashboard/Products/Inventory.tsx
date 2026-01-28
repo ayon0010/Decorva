@@ -9,7 +9,7 @@ const Inventory = () => {
         <div className='p-3 flex flex-col gap-4'>
             <div className='flex items-center gap-6'>
                 <label htmlFor="inventory" className='text-xs'>SKU</label>
-                <input type="text" id="inventory" placeholder='Inventory' className='border px-2 py-1 ml-auto border-black/50 rounded-sm max-w-[300px] w-full' />
+                <input type="text" id="inventory" placeholder='Inventory' className='border px-2 py-1 ml-auto border-black/30 rounded-sm max-w-[300px] w-full' />
             </div>
             <div className='flex items-center gap-6'>
                 <label htmlFor="inventory" className='text-xs'>Stock management</label>
@@ -28,7 +28,7 @@ const Inventory = () => {
                 <div className='flex items-center gap-6'>
                     <label htmlFor="quantity" className='text-xs'>Quantity</label>
                     <div className='flex items-center gap-2 w-full max-w-[300px] ml-auto'>
-                        <input type='number' id='quantity' placeholder='Quantity' className='border px-2 py-1 border-black/50 rounded-sm w-full' />
+                        <input type='number' id='quantity' placeholder='Quantity' className='border px-2 py-1 border-black/30 rounded-sm w-full' />
                     </div>
                 </div>
             )}
