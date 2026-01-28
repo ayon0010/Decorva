@@ -6,46 +6,23 @@ import Inventory from '@/Components/Dashboard/Products/Inventory';
 import LinkedProducts from '@/Components/Dashboard/Products/LinkedProducts';
 import ProductBrand from '@/Components/Dashboard/Products/ProductBrand';
 import ProductCategories from '@/Components/Dashboard/Products/ProductCategories';
+import ProductDescription from '@/Components/Dashboard/Products/ProductDescription';
+import ProductFeatureImage from '@/Components/Dashboard/Products/ProductFeatureImage';
+import ProductGallery from '@/Components/Dashboard/Products/ProductGallery';
 import ProductTags from '@/Components/Dashboard/Products/ProductTags';
 import Shipping from '@/Components/Dashboard/Products/Shipping';
 import { Box, Link, Settings, ShieldCheck, Tag, Truck } from 'lucide-react';
-import Image from 'next/image';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 
 const AddProductPage = () => {
     const [activeTab, setActiveTab] = useState<number>(0);
-
-    const makeId = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const previewUrlRef = useRef<string | null>(null);
-    const [featurePreviewUrl, setFeaturePreviewUrl] = useState<string | null>(null);
-    const [featureFileName, setFeatureFileName] = useState<string | null>(null);
-    const galleryInputRef = useRef<HTMLInputElement>(null);
-    const galleryItemsRef = useRef<{ url: string }[]>([]);
-    const [galleryItems, setGalleryItems] = useState<{ id: string; url: string; name: string }[]>([]);
-
-
-
-    useEffect(() => {
-        return () => {
-            if (previewUrlRef.current) {
-                URL.revokeObjectURL(previewUrlRef.current);
-                previewUrlRef.current = null;
-            }
-            if (galleryItemsRef.current.length) {
-                galleryItemsRef.current.forEach((u) => URL.revokeObjectURL(u.url));
-                galleryItemsRef.current = [];
-            }
-        };
-    }, []);
-
     return (
         <section className=''>
             <h2 className='text-2xl mb-4'>Add new product</h2>
             <div className='w-full flex items-start justify-between gap-6'>
                 <aside className='w-3/4 flex flex-col gap-4'>
                     <input type="text" placeholder='Product name' className='w-full p-2 border border-black/30 rounded-sm' />
+                    <ProductDescription />
                     <div className='border border-black/30'>
                         <div className='flex items-center border-b border-black/30 gap-2 py-2 px-3'>
                             <h3>Product Data -</h3>
@@ -131,174 +108,8 @@ const AddProductPage = () => {
                             Publish
                         </button>
                     </div>
-                    <div className='bg-white p-3 flex flex-col gap-2 border border-black/30'>
-                        <label htmlFor="product-feature-image" className='text-base border-b border-b-black/30 pb-2'>
-                            Product feature image
-                        </label>
-                        <div>
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                accept="image/*"
-                                name="product-feature-image"
-                                id="product-feature-image"
-                                className="hidden"
-                                onChange={(e) => {
-                                    const file = e.target.files?.[0] ?? null;
-
-                                    if (previewUrlRef.current) {
-                                        URL.revokeObjectURL(previewUrlRef.current);
-                                        previewUrlRef.current = null;
-                                    }
-
-                                    if (!file) {
-                                        setFeaturePreviewUrl(null);
-                                        setFeatureFileName(null);
-                                        e.currentTarget.value = "";
-                                        return;
-                                    }
-
-                                    const url = URL.createObjectURL(file);
-                                    previewUrlRef.current = url;
-                                    setFeaturePreviewUrl(url);
-                                    setFeatureFileName(file.name);
-                                    // allow re-selecting the same file later
-                                    e.currentTarget.value = "";
-                                }}
-                            />
-
-                            {featurePreviewUrl ? (
-                                <div className="w-full mt-1">
-                                    <Image
-                                        src={featurePreviewUrl}
-                                        alt={featureFileName ? `Product feature preview: ${featureFileName}` : "Product feature preview"}
-                                        width={1200}
-                                        height={400}
-                                        unoptimized
-                                        className="w-full h-auto aspect-square object-cover border border-black/30 rounded-sm"
-                                    />
-                                    <div className="flex items-center justify-between mt-2">
-                                        <button
-                                            type="button"
-                                            className="text-xs text-primary hover:underline cursor-pointer"
-                                            onClick={() => fileInputRef.current?.click()}
-                                        >
-                                            Replace Product Image
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="text-xs text-red-600 hover:underline cursor-pointer"
-                                            onClick={() => {
-                                                if (previewUrlRef.current) {
-                                                    URL.revokeObjectURL(previewUrlRef.current);
-                                                    previewUrlRef.current = null;
-                                                }
-                                                setFeaturePreviewUrl(null);
-                                                setFeatureFileName(null);
-                                                if (fileInputRef.current) fileInputRef.current.value = "";
-                                            }}
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <button
-                                    type="button"
-                                    className="text-xs text-primary hover:underline"
-                                    onClick={() => fileInputRef.current?.click()}
-                                >
-                                    Set Product Image
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                    <div className='bg-white p-3 flex flex-col gap-2 border border-black/30'>
-                        <div className='text-base border-b border-b-black/30 pb-2'>
-                            Product Gallery
-                        </div>
-                        <div className='flex flex-col gap-2'>
-                            <button
-                                type="button"
-                                className='text-xs text-primary cursor-pointer w-fit hover:underline text-left'
-                                onClick={() => galleryInputRef.current?.click()}
-                            >
-                                Add product gallery images
-                            </button>
-                            <input
-                                ref={galleryInputRef}
-                                type="file"
-                                name="product-image"
-                                id="product-image"
-                                aria-label="Product gallery images"
-                                className='hidden'
-                                accept="image/*"
-                                multiple
-                                onChange={(e) => {
-                                    const files = Array.from(e.target.files ?? []);
-                                    if (!files.length) {
-                                        e.currentTarget.value = "";
-                                        return;
-                                    }
-
-                                    const newItems = files.map((f) => {
-                                        const url = URL.createObjectURL(f);
-                                        return { id: makeId(), url, name: f.name };
-                                    });
-
-                                    galleryItemsRef.current = [...galleryItemsRef.current, ...newItems];
-                                    setGalleryItems((prev) => [...prev, ...newItems]);
-
-                                    // allow selecting the same file(s) again
-                                    e.currentTarget.value = "";
-                                }}
-                            />
-
-                            {galleryItems.length > 0 && (
-                                <div className="flex flex-wrap gap-2">
-                                    {galleryItems.map((item, idx) => (
-                                        <div key={item.id} className="relative w-[50px] h-[50px]">
-                                            <Image
-                                                src={item.url}
-                                                alt={item.name ? `Gallery image: ${item.name}` : `Gallery image ${idx + 1}`}
-                                                width={50}
-                                                height={50}
-                                                unoptimized
-                                                className="w-[50px] h-[50px] object-cover border border-black/30 rounded-sm aspect-square"
-                                            />
-                                            <button
-                                                type="button"
-                                                className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-white border border-black/30 text-[10px] leading-none flex items-center justify-center hover:bg-black/5"
-                                                aria-label="Remove image"
-                                                onClick={() => {
-                                                    URL.revokeObjectURL(item.url);
-                                                    galleryItemsRef.current = galleryItemsRef.current.filter((u) => u.url !== item.url);
-                                                    setGalleryItems((prev) => prev.filter((x) => x.id !== item.id));
-                                                }}
-                                            >
-                                                ×
-                                            </button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            {galleryItems.length > 0 && (
-                                <button
-                                    type="button"
-                                    className="text-xs text-red-600 hover:underline w-fit"
-                                    onClick={() => {
-                                        galleryItemsRef.current.forEach((u) => URL.revokeObjectURL(u.url));
-                                        galleryItemsRef.current = [];
-                                        setGalleryItems([]);
-                                        if (galleryInputRef.current) galleryInputRef.current.value = "";
-                                    }}
-                                >
-                                    Clear gallery
-                                </button>
-                            )}
-                        </div>
-                    </div>
+                    <ProductFeatureImage />
+                    <ProductGallery />
                     <ProductCategories />
                     <ProductTags />
                     <ProductBrand />
