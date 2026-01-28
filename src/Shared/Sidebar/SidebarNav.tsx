@@ -27,7 +27,7 @@ export default function SidebarNav() {
     pathname === href || pathname.startsWith(href + "/");
 
   return (
-    <nav className="flex flex-col gap-2 mt-2">
+    <nav className="flex flex-col gap-4 mt-2">
       <Link
         className={`${baseLink} hover:bg-[#6F9805] ${isActive("/") ? activeLink : ""}`}
         href={"/"}
@@ -36,56 +36,66 @@ export default function SidebarNav() {
         <span className="text-base leading-[110%]">Home</span>
       </Link>
 
-      <Dropdown
-        label="Products"
-        icon={<Package className="w-4 h-4" />}
-        items={[
-          { label: "All Products", href: "/dashboard/products/all" },
-          { label: "Add Product", href: "/dashboard/products/add" },
-          { label: "Categories", href: "/dashboard/products/categories" },
-          { label: "Attributes", href: "/dashboard/products/attributes" },
-          { label: "Variations", href: "/dashboard/products/variations" },
-          { label: "Inventory", href: "/dashboard/products/inventory" },
-        ]}
-      />
+      <div>
+        <Dropdown
+          label="Products"
+          icon={<Package className="w-4 h-4" />}
+          items={[
+            { label: "All Products", href: "/dashboard/products/all" },
+            { label: "Add Product", href: "/dashboard/products/add" },
+            { label: "Categories", href: "/dashboard/products/categories" },
+            { label: "Attributes", href: "/dashboard/products/attributes" },
+            { label: "Variations", href: "/dashboard/products/variations" },
+            { label: "Inventory", href: "/dashboard/products/inventory" },
+          ]}
+        />
+      </div>
 
-      <Dropdown
-        label="Orders"
-        icon={<Package2 className="w-4 h-4" />}
-        items={[
-          { label: "All Orders", href: "/dashboard/orders/all" },
-          { label: "Pending", href: "/dashboard/orders/pending" },
-          { label: "Processing", href: "/dashboard/orders/processing" },
-          { label: "Shipped", href: "/dashboard/orders/shipped" },
-          { label: "Completed", href: "/dashboard/orders/completed" },
-          { label: "Cancelled / Returned", href: "/dashboard/orders/cancelled" },
-        ]}
-      />
+      <div>
+        <Dropdown
+          label="Orders"
+          icon={<Package2 className="w-4 h-4" />}
+          items={[
+            { label: "All Orders", href: "/dashboard/orders/all" },
+            { label: "Pending", href: "/dashboard/orders/pending" },
+            { label: "Processing", href: "/dashboard/orders/processing" },
+            { label: "Shipped", href: "/dashboard/orders/shipped" },
+            { label: "Completed", href: "/dashboard/orders/completed" },
+            { label: "Cancelled / Returned", href: "/dashboard/orders/cancelled" },
+          ]}
+        />
+      </div>
 
-      <Dropdown
-        label="Customers"
-        icon={<Users2 className="w-4 h-4" />}
-        items={[
-          { label: "All customers", href: "/dashboard/customers/all" },
-          { label: "Customer details", href: "/dashboard/customers/details" },
-          { label: "Order history", href: "/dashboard/orders/history" },
-          { label: "Total spent", href: "/dashboard/orders/spent" },
-          {
-            label: "Last order date",
-            href: "/dashboard/orders/last-order-date",
-          },
-        ]}
-      />
+      <div>
+        <Dropdown
+          label="Customers"
+          icon={<Users2 className="w-4 h-4" />}
+          items={[
+            { label: "All customers", href: "/dashboard/customers/all" },
+            { label: "Customer details", href: "/dashboard/customers/details" },
+            { label: "Order history", href: "/dashboard/orders/history" },
+            { label: "Total spent", href: "/dashboard/orders/spent" },
+            {
+              label: "Last order date",
+              href: "/dashboard/orders/last-order-date",
+            },
+          ]}
+        />
+      </div>
 
-      <Dropdown
-        label="Coupons"
-        icon={<TicketPercent className="w-4 h-4" />}
-        items={[
-          { label: "Active coupons", href: "/dashboard/coupons/active" },
-          { label: "Expired coupons", href: "/dashboard/coupons/expired" },
-          { label: "Create coupon", href: "/dashboard/coupons/create" },
-        ]}
-      />
+
+      <div>
+        <Dropdown
+          label="Coupons"
+          icon={<TicketPercent className="w-4 h-4" />}
+          items={[
+            { label: "Active coupons", href: "/dashboard/coupons/active" },
+            { label: "Expired coupons", href: "/dashboard/coupons/expired" },
+            { label: "Create coupon", href: "/dashboard/coupons/create" },
+          ]}
+        />
+      </div>
+
 
       <Dropdown
         label="Shipping"

@@ -526,6 +526,9 @@ const ProductDescription = ({ heading, height }: { heading: string, height: stri
     const [pasteAsTextMode, setPasteAsTextMode] = useState(false)
     const pasteModeRef = useRef(pasteAsTextMode)
 
+    console.log(height);
+
+
     useEffect(() => {
         pasteModeRef.current = pasteAsTextMode
     }, [pasteAsTextMode])
@@ -561,7 +564,7 @@ const ProductDescription = ({ heading, height }: { heading: string, height: stri
         immediatelyRender: false,
         editorProps: {
             attributes: {
-                class: `p-3 h-[${height}] overflow-y-auto scroll-bar focus:outline-none`
+                class: `p-3 ${height ? `h-[${height}]` : 'h-[400px]'} overflow-y-auto scroll-bar focus:outline-none`
             },
             handlePaste: (view, event) => {
                 if (pasteModeRef.current) {
