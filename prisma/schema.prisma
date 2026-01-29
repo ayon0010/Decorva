@@ -308,7 +308,7 @@ model ProductCategory {
   id          String            @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   slug        String            @unique
-  description String?
+  description String?           @default("")
   parentId    String?           @db.ObjectId
   parent      ProductCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   children    ProductCategory[] @relation("CategoryHierarchy")

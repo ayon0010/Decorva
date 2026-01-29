@@ -26,10 +26,6 @@ const AddProductPage = () => {
     const [selectedBrand, setSelectedBrand] = useState<string>('');
 
 
-    console.log(selectedBrand);
-
-
-
     const handleProductDescriptionChange = (data: { productDescription: string; productDescriptionHtml: string }) => {
         setProductDescription(data.productDescription)
         setProductDescriptionHtml(data.productDescriptionHtml)
@@ -106,7 +102,7 @@ const AddProductPage = () => {
                     </div>
                     <ProductDescription heading="Product Short Description" height="300px" onChange={handleShortDescriptionChange} />
                 </aside>
-                <aside className='w-1/4 flex flex-col gap-4 top-[100px] sticky'>
+                <aside className='w-1/4 flex flex-col gap-4'>
                     <div className='bg-white p-3 flex flex-col gap-2 border border-black/30'>
                         <div className='text-base border-b border-b-black/30 pb-2'>
                             Publish
