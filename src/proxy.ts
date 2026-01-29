@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import authConfig from "../src/lib/auth-config"
 import NextAuth from "next-auth";
 import { getToken } from "next-auth/jwt";
-import { UserRole } from "@prisma/client";
 
 
 const { auth } = NextAuth(authConfig)
@@ -14,7 +13,7 @@ export default auth(async function proxy(req) {
     });
     const isLoggedIn = !!token;
     const roles = token?.roles ?? [];
-    const isAdmin = roles.includes(UserRole.ADMIN);
+    const isAdmin = roles.includes("ADMIN");
 
     const pathName = req.nextUrl.pathname;
     const isProtectedRoute = pathName.startsWith("/my-account");
