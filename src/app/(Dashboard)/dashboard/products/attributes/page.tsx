@@ -3,31 +3,31 @@ import PopUp from '@/Shared/PopUp/PopUp';
 import { Edit, Trash, X } from 'lucide-react';
 import React, { useState } from 'react'
 
-const CategoriesPage = () => {
+const AttributesPage = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     return (
         <>
             <div className='flex flex-col gap-4'>
                 <span className='text-2xl font-semibold'>
-                    Product Categories
+                    Product Attributes
                 </span>
                 <div className='flex flex-row items-start justify-between gap-6'>
                     <div className='w-[30%] flex flex-col gap-4'>
                         <form className='flex flex-col gap-4'>
-                            <h4 className='text-lg font-semibold'>Add new category</h4>
+                            <h4 className='text-lg font-semibold'>Add new attribute</h4>
                             <div className='flex flex-col gap-2'>
-                                <label htmlFor='category-name' className='text-sm font-medium'>Category name</label>
-                                <input type='text' id='category-name' placeholder='Category name' className='border border-black/30 rounded-sm p-2' />
+                                <label htmlFor='attribute-name' className='text-sm font-medium'>Attribute name</label>
+                                <input type='text' id='attribute-name' placeholder='Attribute name' className='border border-black/30 rounded-sm p-2' />
                             </div>
                             <div className='flex flex-col gap-2'>
-                                <label htmlFor='category-parent' className='text-sm font-medium'>Category parent</label>
-                                <select id='category-parent' className='border border-black/30 rounded-sm p-2' required>
-                                    <option value=''>Select a parent category</option>
+                                <label htmlFor='attribute-type' className='text-sm font-medium'>Attribute type</label>
+                                <select id='attribute-type' className='border border-black/30 rounded-sm p-2' required>
+                                    <option value=''>Select a attribute type</option>
                                 </select>
                             </div>
                             <div className='flex flex-col gap-2'>
-                                <label htmlFor='category-parent' className='text-sm font-medium'>Slug</label>
-                                <input type='text' id='slug' placeholder='Slug' className='border border-black/30 rounded-sm p-2' />
+                                <label htmlFor='attribute-slug' className='text-sm font-medium'>Slug</label>
+                                <input type='text' id='attribute-slug' placeholder='Slug' className='border border-black/30 rounded-sm p-2' />
                             </div>
                             <button type='submit' className='bg-primary text-white px-4 py-2 rounded-sm cursor-pointer hover:bg-primary/80 transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2'>Add new category</button>
                         </form>
@@ -53,13 +53,13 @@ const CategoriesPage = () => {
                             <tbody>
                                 <tr className='bg-[#F6F7F7] border-b border-b-black/50'>
                                     <td className='p-2 text-left'>
-                                        Indoor Plant
+                                        Color
                                     </td>
                                     <td className='p-2 text-left'>
-                                        SKU123456
+                                        color
                                     </td>
                                     <td className='p-2 text-left'>
-                                        In Stock
+                                        10
                                     </td>
                                     <td className='p-2 text-center'>
                                         <div className='flex items-center gap-2'>
@@ -89,7 +89,7 @@ const CategoriesPage = () => {
                     </div>
                 </div>
             </div>
-            {/* Edit Category PopUp */}
+            {/* Edit Attribute PopUp */}
             <PopUp fn={setIsOpen} isOpen={isOpen} >
                 <div className='w-full h-full relative flex items-center justify-center'>
                     <div className='absolute top-5 right-5 z-10 rounded-full border border-black text-black p-1 cursor-pointer'>
@@ -97,26 +97,26 @@ const CategoriesPage = () => {
                     </div>
                     <div onClick={(e) => e.stopPropagation()} className='h-[80%] max-w-1/2 w-full bg-white rounded-sm p-4'>
                         <span className='text-2xl font-semibold'>
-                            Product Categories
+                            Product Attributes
                         </span>
                         <div className='flex flex-col gap-4'>
                             <form className='flex flex-col gap-4'>
-                                <h4 className='text-lg font-semibold'>Add new category</h4>
+                                <h4 className='text-lg font-semibold'>Add new attribute</h4>
                                 <div className='flex flex-col gap-2'>
-                                    <label htmlFor='category-name' className='text-sm font-medium'>Category name</label>
-                                    <input type='text' id='category-name' placeholder='Category name' className='border border-black/30 rounded-sm p-2' />
+                                    <label htmlFor='attribute-name' className='text-sm font-medium'>Attribute name</label>
+                                    <input type='text' id='attribute-name' placeholder='Attribute name' className='border border-black/30 rounded-sm p-2' />
                                 </div>
                                 <div className='flex flex-col gap-2'>
-                                    <label htmlFor='category-parent' className='text-sm font-medium'>Category parent</label>
-                                    <select id='category-parent' className='border border-black/30 rounded-sm p-2' required>
-                                        <option value=''>Select a parent category</option>
+                                    <label htmlFor='attribute-type' className='text-sm font-medium'>Attribute type</label>
+                                    <select id='attribute-type' className='border border-black/30 rounded-sm p-2' required>
+                                        <option value=''>Select a attribute type</option>
                                     </select>
                                 </div>
                                 <div className='flex flex-col gap-2'>
-                                    <label htmlFor='category-parent' className='text-sm font-medium'>Slug</label>
-                                    <input type='text' id='slug' placeholder='Slug' className='border border-black/30 rounded-sm p-2' />
+                                    <label htmlFor='attribute-slug' className='text-sm font-medium'>Slug</label>
+                                    <input type='text' id='attribute-slug' placeholder='Slug' className='border border-black/30 rounded-sm p-2' />
                                 </div>
-                                <button type='submit' className='bg-primary text-white px-4 py-2 rounded-sm cursor-pointer hover:bg-primary/80 transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2'>Add new category</button>
+                                <button type='submit' className='bg-primary text-white px-4 py-2 rounded-sm cursor-pointer hover:bg-primary/80 transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2'>Add new attribute</button>
                             </form>
                         </div>
                     </div>
@@ -125,4 +125,4 @@ const CategoriesPage = () => {
         </>
     )
 }
-export default CategoriesPage;
+export default AttributesPage;

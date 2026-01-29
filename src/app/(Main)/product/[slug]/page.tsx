@@ -114,12 +114,12 @@ const ProductPage = () => {
 
 
             {/*Product Image Popup */}
-            <PopUp isOpen={isOpen}>
+            <PopUp fn={setOpen} isOpen={isOpen}>
                 <div className='w-full h-full overflow-hidden bg-white relative flex items-center justify-center'>
                     <div className='absolute top-5 right-5 z-10 rounded-full border border-black text-black p-1 cursor-pointer'>
                         <X className='w-5 h-5' onClick={() => setOpen(!isOpen)} />
                     </div>
-                    <div className='w-full h-full'>
+                    <div onClick={(e) => e.stopPropagation()} className='w-full h-full'>
                         <div className='w-full h-full mx-auto flex flex-col items-center justify-center relative'>
                             <Swiper
                                 modules={[Navigation, Pagination]}

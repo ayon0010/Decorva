@@ -45,8 +45,8 @@ export default function SidebarNav() {
             { label: "Add Product", href: "/dashboard/products/add" },
             { label: "Categories", href: "/dashboard/products/categories" },
             { label: "Attributes", href: "/dashboard/products/attributes" },
-            { label: "Variations", href: "/dashboard/products/variations" },
-            { label: "Inventory", href: "/dashboard/products/inventory" },
+            // { label: "Variations", href: "/dashboard/products/variations" },
+            // { label: "Inventory", href: "/dashboard/products/inventory" },
           ]}
         />
       </div>

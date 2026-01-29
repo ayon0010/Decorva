@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
-const PopUp = ({ isOpen, children }: { isOpen: boolean, children: React.ReactNode }) => {
+const PopUp = ({ isOpen, children, fn }: { isOpen: boolean, children: React.ReactNode, fn: (value: boolean) => void }) => {
     useEffect(() => {
         if (typeof document === 'undefined') return;
 
@@ -42,7 +42,7 @@ const PopUp = ({ isOpen, children }: { isOpen: boolean, children: React.ReactNod
     // CreatePortal render the jsx outside the normal React Tree
 
     return createPortal(
-        <div className='fixed z-[9999] inset-0 flex items-center justify-center backdrop-blur-[10px] pointer-events-auto bg-black/40'>
+        <div className='fixed z-[9999] inset-0 flex items-center justify-center backdrop-blur-[10px] pointer-events-auto bg-black/40' onClick={fn ? () => fn(!isOpen) : undefined}>
             <div className='z-[10000] relative w-full h-screen flex items-center justify-center overflow-hidden'>
                 {children}
             </div>

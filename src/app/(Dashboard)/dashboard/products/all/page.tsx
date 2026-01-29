@@ -40,7 +40,7 @@ const AllProductsPage = () => {
                 </select>
             </div>
             <div>
-                <table className='w-full border-collapse bg-white p-3 border border-black/30 text-xs'>
+                <table className='w-full border-collapse bg-white p-3 border border-black/30 text-xs overflow-x-auto'>
                     <thead className='bg-[#FAFAFA] border-b border-b-black/50'>
                         <tr className='text-left'>
                             <th className='p-2'>
