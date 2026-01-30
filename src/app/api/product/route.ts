@@ -67,6 +67,12 @@ export async function GET(req: Request) {
                     not: "",
                 },
             },
+            include: {
+                images: true,
+                categories: true,
+                productBrand: true,
+                tags: true,
+            }
         });
         return NextResponse.json({ success: true, products }, { status: 200 });
     }
@@ -74,5 +80,25 @@ export async function GET(req: Request) {
         console.error(error);
         return NextResponse.json({ success: false, message: 'Failed to get products' }, { status: 500 });
     }
+}
 
+
+export async function DELETE(req: Request) {
+    const session = await auth();
+    const isAdmin = session?.user?.roles?.includes('ADMIN');
+    if (!isAdmin) {
+        return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    }
+    const data = await req.json();
+    const { id } = data;
+    try {
+        const product = await prisma.product.delete({
+            where: { id },
+        });
+        return NextResponse.json({ success: true, message: 'Product deleted successfully' }, { status: 200 });
+    }
+    catch (error) {
+        console.error(error);
+        return NextResponse.json({ success: false, message: 'Failed to delete product' }, { status: 500 });
+    }
 }

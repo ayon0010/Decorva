@@ -1,10 +1,69 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client'
 import { Edit, Eye, Image as ImageIcon, Trash } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
-import product from '@/../public/product7.webp'
 import Image from 'next/image'
+import { useQuery } from '@tanstack/react-query'
+import Swal from 'sweetalert2'
 
 const AllProductsPage = () => {
+
+    const { data: products, isLoading, refetch } = useQuery({
+        queryKey: ['allProducts'],
+        queryFn: async () => {
+            const response = await fetch('/api/product');
+            const data = await response.json();
+            return data.products;
+        }
+    })
+
+
+    const handleDelete = async (id: string) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You want to delete this product?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+        }).then(async (result: any) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Deleting...',
+                    text: 'Please wait while we delete the product...',
+                    icon: 'info',
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                });
+                const response = await fetch(`/api/product/${id}`, {
+                    method: 'DELETE',
+                });
+                const data = await response.json();
+                if (data.success) {
+                    refetch();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: data.message,
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message,
+                    });
+                }
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong!',
+                });
+            }
+        })
+    }
+
     return (
         <div className='flex flex-col gap-4'>
             <div className='flex items-center gap-4'>
@@ -79,45 +138,50 @@ const AllProductsPage = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr className='bg-[#F6F7F7] border-b border-b-black/50'>
-                            <td className='p-2 text-center'>
-                                <Image src={product} alt='product' width={50} height={50} className='w-[50px] h-[50px] object-cover mx-auto' />
-                            </td>
-                            <td className='p-2 text-left'>
-                                Indoor Plant
-                            </td>
-                            <td className='p-2 text-left'>
-                                SKU123456
-                            </td>
-                            <td className='p-2 text-left'>
-                                In Stock
-                            </td>
-                            <td className='p-2 text-left'>
-                                100.00€
-                            </td>
-                            <td className='p-2 text-left'>
-                                Category 1, Category 2
-                            </td>
-                            <td className='p-2 text-left'>
-                                Tag 1, Tag 2
-                            </td>
-                            <td className='p-2 text-left'>
-                                Brand 1
-                            </td>
-                            <td className='p-2 text-left'>
-                                Yes
-                            </td>
-                            <td className='p-2 text-left'>
-                                2026-01-01
-                            </td>
-                            <td className='p-2 text-center'>
-                                <div className='flex items-center justify-center gap-2'>
-                                    <Edit className='w-4 h-4 cursor-pointer hover:text-primary transition-all duration-200' />
-                                    <Trash className='w-4 h-4 cursor-pointer hover:text-primary transition-all duration-200' />
-                                    <Eye className='w-4 h-4 cursor-pointer hover:text-primary transition-all duration-200' />
-                                </div>
-                            </td>
-                        </tr>
+                        {
+                            !isLoading && products?.length > 0 && products?.map((product: any) => (
+                                <tr key={product.id} className='bg-[#F6F7F7] border-b border-b-black/50'>
+                                    <td className='p-2 text-center'>
+                                        <Image src={product?.images[0]?.url} alt='product' width={50} height={50} className='w-[50px] h-[50px] object-cover mx-auto' />
+                                    </td>
+                                    <td className='p-2 text-left capitalize'>
+                                        {product?.name}
+                                    </td>
+                                    <td className='p-2 text-left'>
+                                        {product?.sku}
+                                    </td>
+                                    <td className='p-2 text-left'>
+                                        {product?.stockStatus}
+                                    </td>
+                                    <td className='p-2 text-left'>
+                                        {product?.price}
+                                    </td>
+                                    <td className='p-2 text-left'>
+                                        {product?.categories?.map((category: any) => category?.name).join(', ')}
+                                    </td>
+                                    <td className='p-2 text-left'>
+                                        {product?.tags?.map((tag: any) => tag?.name).join(', ')}
+                                    </td>
+                                    <td className='p-2 text-left'>
+                                        {product?.productBrand?.name}
+                                    </td>
+                                    <td className='p-2 text-left'>
+                                        {product?.featured ? 'Yes' : 'No'}
+                                    </td>
+                                    <td className='p-2 text-left'>
+                                        {product?.createdAt ? new Date(product.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '—'}
+                                    </td>
+                                    <td className='p-2 text-center'>
+                                        <div className='flex items-center justify-center gap-2'>
+                                            <Edit className='w-4 h-4 cursor-pointer hover:text-primary transition-all duration-200' />
+                                            <Trash onClick={() => handleDelete(product.id)} className='w-4 h-4 cursor-pointer hover:text-primary transition-all duration-200' />
+                                            <Eye className='w-4 h-4 cursor-pointer hover:text-primary transition-all duration-200' />
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        }
+
                     </tbody>
                     <tfoot>
                         <tr className='text-left'>

@@ -6,6 +6,7 @@ import React, { useRef, useState } from 'react'
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import SideCart from '../Cart/SiteCart';
+import { useQuery } from '@tanstack/react-query';
 
 const NavBar = () => {
     const pathname = usePathname();
@@ -29,6 +30,14 @@ const NavBar = () => {
     }, [isCategoriesOpen])
 
 
+    const { data: categories, isLoading } = useQuery({
+        queryKey: ['categories'],
+        queryFn: async () => {
+            const response = await fetch('/api/category');
+            const data = await response.json();
+            return data.categories;
+        }
+    })
 
 
     return (
@@ -73,12 +82,15 @@ const NavBar = () => {
                         </div>
                         <div onClick={(e) => e.stopPropagation()} ref={categoriesRef} className='absolute top-full w-full bg-white shadow-lg border border-[#E1E1E1] overflow-hidden' style={{ clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" }}>
                             <ul className='p-6 space-y-4 text-sm leading-[24px] font-normal'>
-                                <li>Indoor Plants</li>
-                                <li>Outdoor Plants</li>
-                                <li>Plants Care</li>
-                                <li>Blog</li>
-                                <li>About</li>
-                                <li>Contact</li>
+                                {
+                                    !isLoading && categories?.length > 0 && categories?.map((category: { id: string, name: string, slug: string }) => (
+                                        <li key={category.id}>
+                                            <Link onClick={() => setIsCategoriesOpen(false)} href={`/shop/${category?.slug}`}>
+                                                {category.name}
+                                            </Link>
+                                        </li>
+                                    ))
+                                }
                             </ul>
                         </div>
                     </div>

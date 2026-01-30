@@ -1,14 +1,67 @@
 "use client"
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import ProductCard from '../Card/ProductCard'
 import ReactRangeSliderInput from 'react-range-slider-input'
 import 'react-range-slider-input/dist/style.css';
+import { useParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 
 const AllProducts = () => {
 
+
+    const params = useParams();
+    const category = params.slug;
+    const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
+
+
+    const { data: categoryProducts, isLoading, refetch } = useQuery({
+        queryKey: ['categoryProducts', category],
+        queryFn: async () => {
+            const response = await fetch(`/api/category/${category}`);
+            const data = await response.json();
+            return data.category?.products;
+        },
+        staleTime: 60 * 60 * 1000, // Cache for 1 hour
+
+    })
+    const { minPrice, maxPrice } = useMemo(() => {
+        if (!categoryProducts || categoryProducts.length === 0) {
+            return { minPrice: 0, maxPrice: 0 };
+        }
+
+        const prices = categoryProducts.map((p: { price: number }) => Number(p?.price));
+        return {
+            minPrice: Math.min(...prices),
+            maxPrice: Math.max(...prices)
+        };
+    }, [categoryProducts]);
+
+
+
+    useEffect(() => {
+        if (minPrice > 0 || maxPrice > 0) {
+            setPriceRange([minPrice, maxPrice]);
+        }
+    }, [minPrice, maxPrice]);
+
+    const filteredProducts = useMemo(() => {
+        if (!categoryProducts) return [];
+
+        const [min, max] = priceRange;
+        return categoryProducts.filter((product: { price: number }) => {
+            const price = Number(product?.price);
+            return price >= min && price <= max;
+        });
+    }, [categoryProducts, priceRange]);
+
+    // useEffect(() => {
+    //     setPriceRange([minPrice, maxPrice]);
+    // }, [minPrice, maxPrice]);
+
     const handleChange = (val: [number, number]) => {
-        console.log(val)
+        setPriceRange(val);
     }
+
 
 
     // const renderCategories = (categories) => {
@@ -58,10 +111,22 @@ const AllProducts = () => {
                 <ProductCard />
             </div>
             <div className='sticky top-[80px] w-1/4 flex flex-col gap-10'>
-                <div>
-                    <h3 className='filter-heading'>Filter By Price</h3>
-                    <ReactRangeSliderInput min={0} max={1000} defaultValue={[0, 1000]} onInput={(val) => handleChange(val)} className='my-dashed-slider' />
-                </div>
+                {
+                    categoryProducts && categoryProducts.length > 1 && (
+                        <div>
+                            <h3 className='filter-heading'>Filter By Price</h3>
+                            <ReactRangeSliderInput min={minPrice}
+                                max={maxPrice}
+                                value={priceRange}
+                                onInput={handleChange}
+                                className='my-dashed-slider'
+                            />
+                            <div className='text-[14px] leading-[15px] font-semibold mt-4'>
+                                د.إ {priceRange[0].toFixed(2)} — د.إ {priceRange[1].toFixed(2)}
+                            </div>
+                        </div>
+                    )
+                }
                 <div>
                     <h3 className='filter-heading'>Filter By Category</h3>
 
