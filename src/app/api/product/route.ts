@@ -60,7 +60,24 @@ export async function POST(req: Request) {
 
 
 export async function GET(req: Request) {
+    const { searchParams } = new URL(req.url);
+    const slug = searchParams.get('slug');
+    
     try {
+
+        if (slug) {
+            const product = await prisma.product.findUnique({
+                where: { slug },
+                include: {
+                    images: true,
+                    categories: true,
+                    productBrand: true,
+                    tags: true,
+                }
+            });
+            return NextResponse.json({ success: true, product }, { status: 200 });
+        }
+
         const products = await prisma.product.findMany({
             where: {
                 slug: {

@@ -7,6 +7,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import SideCart from '../Cart/SiteCart';
 import { useQuery } from '@tanstack/react-query';
+import useCart from '../Hooks/useCart';
 
 const NavBar = () => {
     const pathname = usePathname();
@@ -17,7 +18,7 @@ const NavBar = () => {
         setIsCategoriesOpen(!isCategoriesOpen);
     }
 
-    const [sideCartOpen, setSideCartOpen] = useState<boolean>(false);
+    const { cartOpen, setCartOpen, itemsCount: count } = useCart();
 
 
     useGSAP(() => {
@@ -58,10 +59,10 @@ const NavBar = () => {
                         <div className='flex items-center gap-6 border-r-[#E1E1E1] border-l-[#E1E1E1] border-l border-r p-10 self-stretch'>
                             <Link href={'/login'}><User className='cursor-pointer' /></Link>
                             <Heart className='cursor-pointer' />
-                            <div className='w-fit h-fit relative cursor-pointer' onClick={() => setSideCartOpen(!sideCartOpen)}>
+                            <div className='w-fit h-fit relative cursor-pointer' onClick={() => setCartOpen(!cartOpen)}>
                                 <ShoppingBag />
                                 <div className='bg-primary flex items-center justify-center text-white text-[10px] py-1 px-2 rounded-full absolute -top-2 -right-[10px]'>
-                                    2
+                                    {count}
                                 </div>
                             </div>
                         </div>
@@ -129,7 +130,7 @@ const NavBar = () => {
             </div>
 
 
-            <SideCart isOpen={sideCartOpen} onClose={() => setSideCartOpen(!sideCartOpen)} />
+            <SideCart isOpen={cartOpen} onClose={() => setCartOpen(!cartOpen)} />
         </>
     )
 }

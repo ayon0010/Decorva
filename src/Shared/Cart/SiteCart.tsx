@@ -7,9 +7,8 @@ import gsap from 'gsap'
 import Link from 'next/link'
 import Skeleton from '../Loader/Skeleton'
 import { lora } from '../font/Rubik'
-// import useCart from '../Hooks/useCart'
-// import Skeleton from '../Loader/Skeleton'
-// import SideCartItems from './SideCartItem'
+import useCart from '../Hooks/useCart'
+import SideCartItems from './SideCartItem'
 
 const CartItemSkeleton = () => (
     <div className='flex items-center gap-8 bg-[#F7F7F7] p-[10px] rounded-sm'>
@@ -34,7 +33,6 @@ const CartItemSkeleton = () => (
 
 
 const SideCart = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
-    // const { cart, loading, handleUpdateCartItem, handleRemoveCartItem } = useCart();
 
     const [shouldRender, setShouldRender] = useState(false);
 
@@ -47,25 +45,15 @@ const SideCart = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void })
 
     const loading = false;
 
-    const cartItems = [];
-
-    // const cartItems = cart?.items || [];
-    // console.log(cartItems, 'cartItems');
-
-    // const currencySymbol = cart?.totals?.currency_symbol || '€';
-    // const total = cart?.totals?.total_price / 100;
+    const { getCartItems, itemsCount } = useCart();
+    const cartItems = getCartItems();
 
     const sideCartRef = useRef(null);
     const overlayRef = useRef(null);
 
 
-    // const sousTotal = cart?.items?.reduce(
-    //     (acc, item) =>
-    //         acc +
-    //         Number(item.totals.line_subtotal) +
-    //         Number(item.totals.line_subtotal_tax),
-    //     0
-    // ) / 100;
+    const sousTotal = (cartItems ?? []).reduce((acc, item) => acc + item.quantity * item.price, 0);
+
 
     useGSAP(() => {
         if (!sideCartRef.current) return;
@@ -118,18 +106,18 @@ const SideCart = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void })
                             </div>
                         ) : (
                             <div className='space-y-5'>
-                                {/* {[...cartItems].reverse().map((item, index) => {
+                                {[...cartItems].reverse().map((item, index) => {
                                     console.log(item, 'itemFromSideCart');
 
                                     return (
                                         <SideCartItems
-                                            key={item.key || index}
+                                            key={item.id || index}
                                             item={item}
-                                            onUpdateQuantity={handleUpdateCartItem}
-                                            onRemove={handleRemoveCartItem}
+                                        // onUpdateQuantity={handleUpdateCartItem}
+                                        // onRemove={handleRemoveCartItem}
                                         />
                                     )
-                                })} */}
+                                })}
                             </div>
                         )
                     }
@@ -137,11 +125,11 @@ const SideCart = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void })
                 <div className='p-5 border-t border-t-[#E6E6E6] flex flex-col items-center justify-center gap-4'>
                     <div className='flex items-end gap-1 flex-wrap'>
                         <span className='text-[15px] uppercase leading-[100%] font-bold'>Sub Total</span>
-                        <span className='text-[28px] uppercase leading-[100%] font-bold'>0</span>
+                        <span className='text-[28px] uppercase leading-[100%] font-bold'>{sousTotal.toFixed(2)}د.إ</span>
                         <span className='text-[19px] leading-[100%] font-bold'>(incl. VAT)</span>
                     </div>
                     <Link onClick={() => onClose()} href={'/cart'} className='cursor-pointer'>
-                        <button disabled={cartItems?.length === 0} className={`py-3 px-6 text-sm flex font-semibold uppercase leading-[100%] justify-center items-center gap-1 bg-primary rounded-sm text-white ${cartItems?.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                        <button type='button' disabled={itemsCount === 0} className={`py-3 px-6 text-sm flex font-semibold uppercase leading-[100%] justify-center items-center gap-1 bg-primary rounded-sm text-white ${itemsCount === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}>
                             Continue to Basket
                             <ArrowUpRight className='w-4 h-4' />
                         </button>

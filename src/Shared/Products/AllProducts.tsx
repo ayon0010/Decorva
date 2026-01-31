@@ -14,7 +14,7 @@ const AllProducts = () => {
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
 
 
-    const { data: categoryProducts, isLoading, refetch } = useQuery({
+    const { data: categoryProducts, isLoading } = useQuery({
         queryKey: ['categoryProducts', category],
         queryFn: async () => {
             const response = await fetch(`/api/category/${category}`);
@@ -54,9 +54,6 @@ const AllProducts = () => {
         });
     }, [categoryProducts, priceRange]);
 
-    // useEffect(() => {
-    //     setPriceRange([minPrice, maxPrice]);
-    // }, [minPrice, maxPrice]);
 
     const handleChange = (val: [number, number]) => {
         setPriceRange(val);
@@ -100,15 +97,17 @@ const AllProducts = () => {
     //     );
     // };
 
+    if (isLoading) return <div>Loading...</div>
+    if (categoryProducts && categoryProducts.length === 0) return <div>No products found</div>
 
     return (
         <div className='w-full flex items-start justify-between gap-10'>
             <div className='grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 items-start w-3/4 gap-6'>
-                <ProductCard />
-                <ProductCard />
-                <ProductCard />
-                <ProductCard />
-                <ProductCard />
+                {
+                    categoryProducts && categoryProducts.length > 0 && categoryProducts.map((product: { id: string, images: { url: string }[], name: string, price: number, regularPrice: number, salePrice: number, slug: string }) => (
+                        <ProductCard key={product.id} product={product} />
+                    ))
+                }
             </div>
             <div className='sticky top-[80px] w-1/4 flex flex-col gap-10'>
                 {

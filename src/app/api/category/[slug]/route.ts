@@ -8,7 +8,11 @@ export async function GET(request: Request,
         const category = await prisma.productCategory.findUnique({
             where: { slug },
             include: {
-                products: true,
+                products: {
+                    include: {
+                        images: true,
+                    }
+                },
             }
         });
         return NextResponse.json({ success: true, category }, { status: 200 });

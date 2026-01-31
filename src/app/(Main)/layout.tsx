@@ -6,6 +6,7 @@ import Footer from "@/Shared/Foooter/footer";
 import NavBar from "@/Shared/Navbar/NavBar";
 import { SessionProvider } from "next-auth/react";
 import TanstackProvider from "@/Shared/Providers/TanstackProvider";
+import CartProvider from "@/Shared/Providers/CartPovider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,9 +25,11 @@ export default function RootLayout({
       >
         <SessionProvider>
           <TanstackProvider>
-            <NavBar />
-            {children}
-            <Footer />
+            <CartProvider>
+              <NavBar />
+              {children}
+              <Footer />
+            </CartProvider>
           </TanstackProvider>
         </SessionProvider>
       </body>
