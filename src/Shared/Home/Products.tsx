@@ -23,12 +23,12 @@ const Products = () => {
 
     return (
         <div className="global-padding layout mt-10">
-            <ul className='flex items-center justify-center gap-10'>
+            <ul className='flex items-center justify-center gap-10 flex-wrap'>
                 <li className={`uppercase text-sm leading-[24px] border-b-2 font-normal hover:text-primary transition-all duration-300 cursor-pointer ${lora.className} ${active === 0 ? "border-b-primary text-primary" : "text-black border-b-transparent hover:border-b-primary"}`} onClick={() => setActive(0)}>Plant Stands & Movers</li>
                 <li className={`uppercase text-sm leading-[24px] border-b-2 font-normal hover:text-primary transition-all duration-300 cursor-pointer ${lora.className} ${active === 1 ? "border-b-primary text-primary" : "text-black border-b-transparent hover:border-b-primary"}`} onClick={() => setActive(1)}>Plant Families</li>
                 <li className={`uppercase text-sm leading-[24px] border-b-2 font-normal hover:text-primary transition-all duration-300 cursor-pointer ${lora.className} ${active === 2 ? "border-b-primary text-primary" : "text-black border-b-transparent hover:border-b-primary"}`} onClick={() => setActive(2)}>Outdoor Plant Pots</li>
             </ul>
-            <div className='mt-6 grid 2xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2 grid-cols-1 items-start w-full gap-6'>
+            <div className='mt-6 grid 2xl:grid-cols-5 lg:grid-cols-4 grid-cols-2 items-start w-full gap-6'>
                 {
                     isLoading ? (
                         Array.from({ length: 8 }).map((_, index) => (

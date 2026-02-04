@@ -155,7 +155,7 @@ const Slider = () => {
 
     return (
         <section
-            className='max-h-[768px] w-full h-dvh relative flex flex-col'
+            className='md:max-h-[768px] w-full md:h-dvh h-[380px] relative flex flex-col'
             role="region"
             aria-label="Featured promotions slider"
         >

@@ -105,7 +105,7 @@ const AddProductPage = () => {
         descriptionText: productDescription,
         shortDescriptionText: productShortDescription,
         sku: sampleProductData?.inventory?.sku,
-        status: ProductStatus.DRAFT,
+        status: ProductStatus.PUBLISH,
         visibility: ProductVisibility.VISIBLE,
         featured: false,
         productType: productType === 'simple' ? ProductType.SIMPLE : ProductType.VARIABLE,

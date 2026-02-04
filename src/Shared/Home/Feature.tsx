@@ -7,7 +7,7 @@ import { lora } from '../font/Rubik';
 
 const Feature = () => {
     return (
-        <div className={`${lora.className} global-padding layout flex items-center justify-between gap-6`}>
+        <div className={`${lora.className} global-padding layout flex md:flex-row flex-col md:items-center items-start justify-between md:gap-6 gap-10`}>
             <div className='flex items-center gap-3 flex-1 border-r border-r-[#ebebeb]'>
                 <Image src={feature1} alt='feature1' width={48} height={32} className='object-cover' />
                 <div className='flex flex-col gap-2'>

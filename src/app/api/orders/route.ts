@@ -158,6 +158,50 @@ export async function POST(req: Request) {
             data: { lastOrderDate: new Date() },
         });
 
+        // Update stock if payment is PAID
+        if (paymentStatus === PaymentStatus.PAID) {
+            for (const orderItem of order.items) {
+                try {
+                    if (orderItem.variationId) {
+                        // Update variation stock
+                        const variation = await prisma.productVariation.findUnique({
+                            where: { id: orderItem.variationId },
+                        });
+                        
+                        if (variation && variation.manageStock && variation.stockQuantity != null) {
+                            const newStock = Math.max(0, variation.stockQuantity - orderItem.quantity);
+                            await prisma.productVariation.update({
+                                where: { id: orderItem.variationId },
+                                data: {
+                                    stockQuantity: newStock,
+                                    stockStatus: newStock === 0 ? 'OUTOFSTOCK' : 'INSTOCK',
+                                },
+                            });
+                        }
+                    } else {
+                        // Update product stock
+                        const product = await prisma.product.findUnique({
+                            where: { id: orderItem.productId },
+                        });
+                        
+                        if (product && product.manageStock && product.stockQuantity != null) {
+                            const newStock = Math.max(0, product.stockQuantity - orderItem.quantity);
+                            await prisma.product.update({
+                                where: { id: orderItem.productId },
+                                data: {
+                                    stockQuantity: newStock,
+                                    stockStatus: newStock === 0 ? 'OUTOFSTOCK' : 'INSTOCK',
+                                },
+                            });
+                        }
+                    }
+                } catch (stockError) {
+                    console.error(`Failed to update stock for order item ${orderItem.id}:`, stockError);
+                    // Continue with other items even if one fails
+                }
+            }
+        }
+
         return NextResponse.json({
             success: true,
             message: 'Order created successfully',
@@ -172,7 +216,7 @@ export async function POST(req: Request) {
     }
 }
 
-export async function GET(req: Request) {
+export async function GET() {
     try {
         const session = await auth();
         const isAdmin = session?.user?.roles.includes('ADMIN');
