@@ -68,7 +68,7 @@ const ContactPage = () => {
                     referrerPolicy="no-referrer-when-downgrade">
                 </iframe>
             </div>
-            <div className='flex items-start gap-6 global-padding layout global-margin'>
+            <div className='flex items-start md:flex-row flex-col gap-6 global-padding layout global-margin'>
                 <div className='flex-1 flex flex-col gap-6'>
                     <h2 className='text-2xl font-bold'>Contact Us</h2>
                     <p className='text-sm leading-[130%]'>Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum. Mirum est notare quam littera gothica, quam nunc putamus parum claram anteposuerit litterarum formas human. qui sequitur mutationem consuetudium lectorum. Mirum est notare quam</p>
@@ -87,7 +87,7 @@ const ContactPage = () => {
                         </li>
                     </ul>
                 </div>
-                <div className='flex-1 flex flex-col gap-6'>
+                <div className='flex-1 flex flex-col gap-6 w-full'>
                     <h2 className='text-2xl font-bold'>Send us a message</h2>
                     <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
                         <div className='flex flex-col gap-2'>

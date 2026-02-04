@@ -76,8 +76,10 @@ const NavBar = () => {
     useEffect(() => {
         setTimeout(() => {
             setIsCategoriesOpen(false)
+            setIsMenuOpen(false)
         }, 100)
     }, [pathname])
+
 
     return (
         <>

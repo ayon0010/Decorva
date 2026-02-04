@@ -94,8 +94,8 @@ const Cart = () => {
             <div className='global-margin'>
                 <PageTitle title="Cart" subTitle="Home / Cart" />
             </div>
-            <section className='global-padding layout flex items-start gap-6 global-margin'>
-                <div className='flex-1 flex flex-col gap-4'>
+            <section className='global-padding layout flex items-start lg:flex-row flex-col gap-6 global-margin'>
+                <div className='flex-1 w-full flex flex-col gap-4'>
                     <div className='py-3 px-4 text-white uppercase text-base font-medium bg-[#222222]'>
                         Coupon
                     </div>
@@ -110,13 +110,13 @@ const Cart = () => {
                     </div>
                     <div className='border border-[#E1E1E1] p-4 flex flex-col gap-4'>
                         <p>Enter your coupon code if you have one</p>
-                        <div className='flex items-center gap-2 max-w-[400px] w-full'>
-                            <input type="text" placeholder='Enter coupon code' className='border border-[#E1E1E1] rounded-sm px-4 py-2' />
+                        <div className='flex md:items-center items-start md:flex-row flex-col gap-2 w-full'>
+                            <input type="text" placeholder='Enter coupon code' className='border border-[#E1E1E1] rounded-sm px-4 py-2 max-w-[300px] w-[70%]' />
                             <button type="button" className='bg-[#222222] text-white px-4 py-2 rounded-sm cursor-pointer active:scale-[0.98] transition-all duration-300'>Apply Coupon</button>
                         </div>
                     </div>
                 </div>
-                <div className='flex-1'>
+                <div className='flex-1 w-full'>
                     <div className='py-3 px-4 text-white uppercase text-base font-medium bg-[#222222]'>
                         Cart Total
                     </div>

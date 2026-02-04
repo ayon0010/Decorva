@@ -201,7 +201,7 @@ const Checkout = () => {
         }
 
         const script = document.createElement('script');
-        script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}&currency=USD`;
+        script.src = `https://www.paypal.com/sdk/js?client-id=${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}&currency=AED`;
         script.async = true;
 
         const currentTotal = orderSummary.total;
@@ -215,7 +215,7 @@ const Checkout = () => {
                             purchase_units: [{
                                 amount: {
                                     value: currentTotal.toFixed(2),
-                                    currency_code: 'USD',
+                                    currency_code: 'AED',
                                 },
                                 description: `Order from Decorva - ${currentCartItems.length} item(s)`,
                             }],
@@ -318,8 +318,8 @@ const Checkout = () => {
             <div className='global-margin'>
                 <PageTitle title="Checkout" subTitle="Home / Checkout" />
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className='global-padding layout flex items-start gap-6 global-margin'>
-                <div className='flex-1'>
+            <form onSubmit={handleSubmit(onSubmit)} className='global-padding layout flex items-start lg:flex-row flex-col gap-6 global-margin'>
+                <div className='flex-1 w-full'>
                     <div className='py-3 px-4 text-white uppercase text-base font-medium bg-[#222222]'>
                         Billing Details
                     </div>
@@ -605,7 +605,7 @@ const Checkout = () => {
                         {errors.paymentMethod && <p className='text-xs text-red-500 mt-2'>{errors.paymentMethod.message}</p>}
                     </div>
                 </div>
-                <div className='flex-1'>
+                <div className='flex-1 w-full'>
                     <div className='py-3 px-4 text-white uppercase text-base font-medium bg-[#222222]'>
                         Your Order
                     </div>
