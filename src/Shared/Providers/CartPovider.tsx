@@ -7,7 +7,7 @@ export type CartItem = { id: string; quantity: number; price: number; image: str
 export const CartContext = createContext<{
     cartOpen: boolean;
     setCartOpen: (cartOpen: boolean) => void;
-    handleAddToCart: (product: CartItem) => void;
+    handleAddToCart: (product: CartItem, open?: boolean) => void;
     getCartItems: () => CartItem[];
     cartItemsCount: () => number;
     itemsCount: number;
@@ -107,7 +107,7 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
         sync();
     }, [isLoggedIn, getLocalItems]);
 
-    const handleAddToCart = useCallback(async (product: CartItem, open?: true) => {
+    const handleAddToCart = useCallback(async (product: CartItem, open?: boolean) => {
         if (typeof window === "undefined") return;
         setCartOpen(open ?? true);
 

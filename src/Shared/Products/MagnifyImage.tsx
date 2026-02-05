@@ -1,4 +1,4 @@
-import React, { useState, useRef, MouseEvent } from 'react';
+import React, { useState, useRef, MouseEvent, TouchEvent } from 'react';
 import Image from 'next/image';
 
 interface ImageMagnifierProps {
@@ -36,10 +36,42 @@ const ImageMagnifier: React.FC<ImageMagnifierProps> = ({
         const elem = e.currentTarget;
         const { top, left } = elem.getBoundingClientRect();
 
-        // Calculate cursor position relative to the image
+        // Calculate cursor position relative to the image (mouse)
         const x = e.pageX - left - window.pageXOffset;
         const y = e.pageY - top - window.pageYOffset;
         setXY([x, y]);
+    };
+
+    const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
+        const elem = e.currentTarget;
+        const { width, height, top, left } = elem.getBoundingClientRect();
+
+        const touch = e.touches[0];
+        if (!touch) return;
+
+        const x = touch.pageX - left - window.pageXOffset;
+        const y = touch.pageY - top - window.pageYOffset;
+
+        setSize([width, height]);
+        setXY([x, y]);
+        setShowMagnifier(true);
+    };
+
+    const handleTouchMove = (e: TouchEvent<HTMLDivElement>) => {
+        const elem = e.currentTarget;
+        const { top, left } = elem.getBoundingClientRect();
+
+        const touch = e.touches[0];
+        if (!touch) return;
+
+        // Calculate touch position relative to the image (mobile)
+        const x = touch.pageX - left - window.pageXOffset;
+        const y = touch.pageY - top - window.pageYOffset;
+        setXY([x, y]);
+    };
+
+    const handleTouchEnd = () => {
+        setShowMagnifier(false);
     };
 
     const handleMouseLeave = () => {
@@ -54,6 +86,10 @@ const ImageMagnifier: React.FC<ImageMagnifierProps> = ({
             onMouseEnter={handleMouseEnter}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onTouchCancel={handleTouchEnd}
         >
             <Image
                 src={src}

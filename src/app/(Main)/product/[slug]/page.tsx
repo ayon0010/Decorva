@@ -4,7 +4,7 @@ import PageTitle from '@/Shared/PageTitle/PageTitle';
 import Image from 'next/image';
 import { ArrowLeft, ArrowRight, Heart, Star, X } from 'lucide-react';
 import Title from '@/Shared/Title/Title';
-import Offers from '@/Shared/Home/Offers';
+// import Offers from '@/Shared/Home/Offers';
 import PopUp from '@/Shared/PopUp/PopUp';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
@@ -21,14 +21,14 @@ import Skeleton from '@/Shared/Loader/Skeleton';
 
 const SinglePageLoader = () => {
     return (
-        <section className='flex items-start gap-7 layout global-padding'>
-            <div className='w-1/2 grid grid-cols-2 gap-2 rounded-sm border border-[#E1E1E1]'>
+        <section className='flex md:flex-row flex-col items-start gap-7 layout global-padding'>
+            <div className='md:w-1/2 w-full grid md:grid-cols-2 grid-cols-1 gap-2 rounded-sm border border-[#E1E1E1]'>
                 <Skeleton className='w-full h-[285px]' />
-                <Skeleton className='w-full h-[285px]' />
-                <Skeleton className='w-full h-[285px]' />
-                <Skeleton className='w-full h-[285px]' />
+                <Skeleton className='w-full h-[285px] hidden md:block' />
+                <Skeleton className='w-full h-[285px] md:block hidden' />
+                <Skeleton className='w-full h-[285px] hidden md:block' />
             </div>
-            <div className='w-1/2 flex flex-col gap-6'>
+            <div className='md:w-1/2 w-full flex flex-col gap-6'>
                 <Skeleton className='w-[80%] h-[20px]' />
                 <Skeleton className='w-[40%] h-[16px]' />
                 <Skeleton className='w-[60%] h-[200px]' />
@@ -64,18 +64,41 @@ const ProductPage = () => {
     return (
         <div>
             <PageTitle title="Product" subTitle="Home / Product" />
-            <div className='lg:my-20 my-10'>
+            <div className='md:my-20 my-5'>
                 {
                     isLoading ? <SinglePageLoader /> : (
-                        <section className='flex items-start justify-between gap-7 layout global-padding'>
-                            <aside className='lg:w-1/2 w-full grid grid-cols-2 gap-2 overflow-hidden rounded-sm border border-[#E1E1E1]'>
-                                {
-                                    images && images.length > 0 && images.slice(0, 4).map((img: { id: string, url: string }, i: number) => {
-                                        return (
-                                            <Image onClick={() => { setOpen(true); setDefault_slide(i); setActiveIndex(i) }} key={i} src={img?.url} alt="product" width={285} height={285} className='w-full h-full object-cover aspect-[1] cursor-pointer' />
-                                        )
-                                    })
-                                }
+                        <section className='flex items-start md:flex-row flex-col justify-between gap-7 layout global-padding'>
+                            <aside className='lg:w-1/2 w-full'>
+                                <div className='md:grid hidden grid-cols-2 gap-2 overflow-hidden rounded-sm border border-[#E1E1E1]'>
+                                    {
+                                        images && images.length > 0 && images.slice(0, 4).map((img: { id: string, url: string }, i: number) => {
+                                            return (
+                                                <Image onClick={() => { setOpen(true); setDefault_slide(i); setActiveIndex(i) }} key={i} src={img?.url} alt="product" width={285} height={285} className='w-full object-cover aspect-[1] cursor-pointer' />
+                                            )
+                                        })
+                                    }
+                                </div>
+                                <div className='block md:hidden'>
+                                    <Swiper
+                                        modules={[Navigation, Pagination]}
+                                        slidesPerView={1}
+                                        pagination={{ clickable: true }}
+                                        loop={true}
+                                        className='mobile-banner'
+                                    >
+                                        {
+                                            images?.map((singleImage: { id: string, url: string }, i: number) => {
+                                                return (
+                                                    <SwiperSlide onClick={() => { setOpen(true); setDefault_slide(i); setActiveIndex(i) }} key={i}>
+                                                        <div className=''>
+                                                            <Image src={singleImage?.url} width={649} height={649} className='w-full h-full object-cover aspect-[1]' alt={singleImage?.id} />
+                                                        </div>
+                                                    </SwiperSlide>
+                                                )
+                                            })
+                                        }
+                                    </Swiper>
+                                </div>
                             </aside>
                             <aside className='lg:w-1/2 w-full space-y-6'>
                                 <h2 className='product-title hover:text-primary transition-colors duration-300 text-black'>
@@ -156,7 +179,7 @@ const ProductPage = () => {
                 </div>
                 <div>
                     <Title title="Related Products" className="text-center" />
-                    <Offers />
+                    {/* <Offers /> */}
                 </div>
             </div>
 

@@ -6,19 +6,17 @@ import 'react-range-slider-input/dist/style.css';
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import ProductLoader from '@/app/(Main)/Loader/ProductLoader';
+import PopUp from '../PopUp/PopUp';
+import { X } from 'lucide-react';
 
 const AllProducts = () => {
-
-
     const params = useParams();
     const category = params.slug;
+    const [isOpen, setIsOpen] = useState<boolean>(false);
 
     const url = category ? `/api/category/${category}` : '/api/product';
 
-
-
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
-
 
     const { data: categoryProducts, isLoading } = useQuery({
         queryKey: ['categoryProducts', category],
@@ -104,43 +102,73 @@ const AllProducts = () => {
 
     if (categoryProducts && categoryProducts.length === 0) return <div>No products found</div>
 
-    return (
-        <div className='w-full flex items-start justify-between gap-10'>
-            <div className='grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 items-start w-3/4 gap-6'>
-                {
-                    isLoading ?
-                        Array.from({ length: 12 }).map((_, index) => (
-                            <ProductLoader key={index} />
-                        ))
-                        :
-                        filteredProducts && filteredProducts.length > 0 && filteredProducts.map((product: { id: string, images: { url: string }[], name: string, price: number, regularPrice: number, salePrice: number, slug: string }) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))
-                }
-            </div>
-            <div className='sticky top-[80px] w-1/4 flex flex-col gap-10'>
-                {
-                    categoryProducts && categoryProducts.length > 1 && (
-                        <div>
-                            <h3 className='filter-heading'>Filter By Price</h3>
-                            <ReactRangeSliderInput min={minPrice}
-                                max={maxPrice}
-                                value={priceRange}
-                                onInput={handleChange}
-                                className='my-dashed-slider'
-                            />
-                            <div className='text-[14px] leading-[15px] font-semibold mt-4'>
-                                د.إ {priceRange[1].toFixed(2)} — د.إ {priceRange[0].toFixed(2)}
-                            </div>
-                        </div>
-                    )
-                }
-                <div>
-                    <h3 className='filter-heading'>Filter By Category</h3>
 
+    return (
+        <>
+            <div className='w-full flex md:flex-row flex-col items-start justify-between gap-10'>
+                <div className='text-lg leading-[15px] font-semibold text-black pb-1 global-b-bottom w-full md:hidden block' onClick={() => setIsOpen(!isOpen)}>Filter</div>
+                <div className='grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-2 items-start md:w-3/4 w-full gap-6'>
+                    {
+                        isLoading ?
+                            Array.from({ length: 12 }).map((_, index) => (
+                                <ProductLoader key={index} />
+                            ))
+                            :
+                            filteredProducts && filteredProducts.length > 0 && filteredProducts.map((product: { id: string, images: { url: string }[], name: string, price: number, regularPrice: number, salePrice: number, slug: string }) => (
+                                <ProductCard key={product.id} product={product} />
+                            ))
+                    }
+                </div>
+                <div className='sticky top-[80px] w-1/4 hidden flex-col gap-10 md:flex '>
+                    {
+                        categoryProducts && categoryProducts.length > 1 && (
+                            <div>
+                                <h3 className='filter-heading'>Filter By Price</h3>
+                                <ReactRangeSliderInput min={minPrice}
+                                    max={maxPrice}
+                                    value={priceRange}
+                                    onInput={handleChange}
+                                    className='my-dashed-slider'
+                                />
+                                <div className='text-[14px] leading-[15px] font-semibold mt-4'>
+                                    د.إ {priceRange[1].toFixed(2)} — د.إ {priceRange[0].toFixed(2)}
+                                </div>
+                            </div>
+                        )
+                    }
+                    <div>
+                        <h3 className='filter-heading'>Filter By Category</h3>
+                    </div>
                 </div>
             </div>
-        </div>
+            <PopUp isOpen={isOpen} fn={setIsOpen}>
+                <div className='w-full h-full flex items-center justify-center'>
+                    <div className='w-[90%] h-[70vh] bg-white rounded-sm p-4 relative' onClick={(e) => e.stopPropagation()}>
+                        <button type='button' title='Close' onClick={() => setIsOpen(false)} className='absolute top-4 right-4 border rounded-full p-1 cursor-pointer'>
+                            <X className='w-4 h-4' />
+                        </button>
+                        <div className='pt-10 h-full flex flex-col justify-between gap-6'>
+                            <div className='h-[75%] overflow-y-auto scroll-bar'>
+                                <h3 className='filter-heading global-b-bottom'>Filter By Category</h3>
+                            </div>
+                            <div className='h-[25%]'>
+                                <h3 className='filter-heading'>Filter By Price</h3>
+                                <ReactRangeSliderInput min={minPrice}
+                                    max={maxPrice}
+                                    value={priceRange}
+                                    onInput={handleChange}
+                                    className='my-dashed-slider'
+                                />
+                                <div className='text-[14px] leading-[15px] font-semibold mt-4'>
+                                    د.إ {priceRange[1].toFixed(2)} — د.إ {priceRange[0].toFixed(2)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </PopUp>
+        </>
+
     )
 }
 

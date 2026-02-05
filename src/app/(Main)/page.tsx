@@ -1,7 +1,6 @@
 import Categories from "@/Shared/Home/Categories";
 import Feature from "@/Shared/Home/Feature";
 import News from "@/Shared/Home/News";
-import Offers from "@/Shared/Home/Offers";
 import Products from "@/Shared/Home/Products";
 import Slider from "@/Shared/Home/Slider";
 import Title from "@/Shared/Title/Title";

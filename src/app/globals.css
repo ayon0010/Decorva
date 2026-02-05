@@ -135,6 +135,25 @@ body {
   bottom: 0;
   left: 0;
 }
+.footer-title-mbl {
+  font-size: 14px;
+  line-height: 16px;
+  margin-bottom: 31px;
+  padding-bottom: 10px;
+  text-transform: uppercase;
+  font-weight: 500;
+  position: relative;
+}
+
+.footer-title-mbl::before {
+  content: "";
+  width: 35px;
+  height: 2px;
+  background-color: #222222;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
 
 
 .filter-heading {
@@ -227,6 +246,19 @@ left: 8px;             /* leave room for thumb radius */
     100%;
   border-image-slice: 1;
   border-width: 0 0 2px 0;
+}
+
+.mobile-banner .swiper-pagination-bullet {
+  width: 40px !important;
+  height: 4px !important;
+  background-color: #ffffff !important;
+  border-radius: 0px !important;
+  opacity: 0.3 !important;
+}
+
+.mobile-banner .swiper-pagination-bullet-active {
+  background-color: white !important;
+  opacity: 0.8 !important;
 }
 
 

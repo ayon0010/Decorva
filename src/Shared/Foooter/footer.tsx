@@ -18,8 +18,8 @@ const Footer = () => {
                     </p>
                 </div>
                 <div>
-                    <h3 className='footer-title'>Information</h3>
-                    <ul className='space-y-2'>
+                    <h3 className='md:footer-title footer-title-mbl md:text-left text-right'>Information</h3>
+                    <ul className='space-y-2 md:text-left text-right'>
                         <li className='text-sm leading-[30px] hover:text-primary transition-colors duration-300 text-black'>
                             <Link href={"/about"}>About Us</Link>
                         </li>
@@ -88,8 +88,8 @@ const Footer = () => {
                     </ul>
                 </div>
                 <div>
-                    <h3 className='footer-title'>Customer Service</h3>
-                    <ul className='space-y-2'>
+                    <h3 className='md:footer-title footer-title-mbl md:text-left text-right'>Customer Service</h3>
+                    <ul className='space-y-2 md:text-left text-right'>
                         <li className='text-sm leading-[30px] hover:text-primary transition-colors duration-300 text-black'>
                             <Link href={"/contact-us"}>Contact Us</Link>
                         </li>

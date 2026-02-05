@@ -8,19 +8,19 @@ import { lora } from '../font/Rubik';
 const Feature = () => {
     return (
         <div className={`${lora.className} global-padding layout flex md:flex-row flex-col md:items-center items-start justify-between md:gap-6 gap-10`}>
-            <div className='flex items-center gap-3 flex-1 border-r border-r-[#ebebeb]'>
+            <div className='flex items-center gap-3 flex-1 md:border-r md:border-r-[#ebebeb]'>
                 <Image src={feature1} alt='feature1' width={48} height={32} className='object-cover' />
                 <div className='flex flex-col gap-2'>
                     <h3 className='text-sm leading-[110%] capitalize font-bold'>Free Shipping</h3>
-                    <p className='text-sm leading-[18px] font-light'>Free shipping around the world for all <br />
+                    <p className='text-sm leading-[18px] font-light'>Free shipping around the world for all <br className='md:block hidden' />
                         orders over $120</p>
                 </div>
             </div>
-            <div className='flex items-center gap-3 flex-1 border-r border-r-[#ebebeb]'>
+            <div className='flex items-center gap-3 flex-1 md:border-r md:border-r-[#ebebeb]'>
                 <Image src={feature2} alt='feature1' width={48} height={32} className='object-cover' />
                 <div className='flex flex-col gap-2'>
                     <h3 className='text-sm leading-[110%] capitalize font-bold'>Safe Payment</h3>
-                    <p className='text-sm leading-[18px] font-light'>With our payment gateway, don’t worry <br />
+                    <p className='text-sm leading-[18px] font-light'>With our payment gateway, don’t worry <br className='md:block hidden' />
                     about your information</p>
                 </div>
             </div>
@@ -28,7 +28,7 @@ const Feature = () => {
                 <Image src={feature3} alt='feature1' width={48} height={32} className='object-cover' />
                 <div className='flex flex-col gap-2'>
                     <h3 className='text-sm leading-[110%] capitalize font-bold'>Friendly Services</h3>
-                    <p className='text-sm leading-[18px] font-light'>You have 30-day return guarantee for <br />
+                    <p className='text-sm leading-[18px] font-light'>You have 30-day return guarantee for <br className='md:block hidden' />
                     every single order</p>
                 </div>
             </div>
