@@ -1,51 +1,51 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
+import authConfig from "../src/lib/auth-config"
+import NextAuth from "next-auth";
 
-export async function middleware(req: NextRequest) {
-    const { pathname } = req.nextUrl;
 
-    // Only check for routes that need auth
-    const protectedRoutes = ["/my-account", "/checkout"];
-    const adminRoutes = ["/dashboard"];
+const { auth } = NextAuth(authConfig)
+export default auth(async function proxy(req) {
 
-    // Get JWT from cookie (works on Vercel)
-    const token = await getToken({
-        req,
-        secret: process.env.AUTH_SECRET,
-    });
-
-    const isLoggedIn = !!token;
-    const roles = token?.roles ?? [];
+    const isLoggedIn = !!req.auth;
+    console.log(req.auth);
+    const session = await auth();
+    console.log(session,'ayon');
+    
+    const roles = req.auth?.user?.roles ?? [];
+    console.log(roles);
+    
     const isAdmin = roles.includes("ADMIN");
 
-    // 1️⃣ Redirect non-logged-in users from protected routes
-    if (protectedRoutes.some((path) => pathname.startsWith(path)) && !isLoggedIn) {
+    const pathName = req.nextUrl.pathname;
+    const isProtectedRoute =
+        pathName.startsWith("/my-account") ||
+        pathName.startsWith("/checkout");
+    const isAdminRoute =
+        pathName === "/dashboard" || pathName.startsWith("/dashboard/");
+    // 🔒 Protected routes (auth required)
+    if (isProtectedRoute && !isLoggedIn) {
         const loginUrl = new URL("/login", req.url);
-        loginUrl.searchParams.set("callbackUrl", pathname);
+        loginUrl.searchParams.set("callbackUrl", pathName);
         return NextResponse.redirect(loginUrl);
     }
 
-    // 2️⃣ Redirect non-admin users from admin routes
-    if (adminRoutes.some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
+    // 🛡 Admin routes (auth + admin role)
+    if (isAdminRoute) {
         if (!isLoggedIn || !isAdmin) {
             const loginUrl = new URL("/login", req.url);
-            loginUrl.searchParams.set("callbackUrl", pathname);
+            loginUrl.searchParams.set("callbackUrl", pathName);
             return NextResponse.redirect(loginUrl);
         }
     }
 
-    // 3️⃣ Redirect logged-in users away from login page
-    if (isLoggedIn && pathname === "/login") {
+    // 🚫 Logged-in users shouldn't see login page
+    if (isLoggedIn && pathName === "/login") {
         return NextResponse.redirect(new URL("/my-account", req.url));
     }
 
-    // 4️⃣ Otherwise, allow access
     return NextResponse.next();
-}
+});
 
-// Match all pages except Next.js internals and API auth routes
 export const config = {
-    matcher: [
-        "/((?!_next|api/auth|favicon.ico|robots.txt).*)",
-    ],
+    matcher: ["/((?!_next|api/auth).*)"],
 };

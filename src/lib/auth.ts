@@ -32,7 +32,7 @@ declare module "next-auth" {
     }
 }
 
-declare module "next-auth/jwt" {
+declare module "next-auth" {
     interface JWT {
         roles: UserRole[];
     }
@@ -41,6 +41,7 @@ declare module "next-auth/jwt" {
 
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
+    ...authConfig,
     events: {
         // email & password diye jodi account khola thake , abr same email diye google diye account khole tahole next auth new user create na kore link kore dibe
         async linkAccount({ user }) {
@@ -53,6 +54,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         }
     },
     callbacks: {
+        ...authConfig.callbacks,
         // This runs after authentication succeeds, for ALL providers:
         //  it can block the user even if the provider is valid
         // Authorization
@@ -87,13 +89,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             token.roles = getUser?.roles;
             return token;
         }
-
-
     },
     adapter: PrismaAdapter(prisma),
     secret: process.env.AUTH_SECRET,
     session: { strategy: "jwt" },
-    ...authConfig,
     providers: [
         Google({
             clientId: process.env.GOOGLE_CLIENT_ID,
