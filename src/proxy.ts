@@ -7,13 +7,7 @@ const { auth } = NextAuth(authConfig)
 export default auth(async function proxy(req) {
 
     const isLoggedIn = !!req.auth;
-    console.log(req.auth);
-    const session = await auth();
-    console.log(session,'ayon');
-    
     const roles = req.auth?.user?.roles ?? [];
-    console.log(roles);
-    
     const isAdmin = roles.includes("ADMIN");
 
     const pathName = req.nextUrl.pathname;
