@@ -9,7 +9,6 @@ import Image from '@tiptap/extension-image'
 import { AlignCenter, AlignLeft, AlignRight, Italic, List, ListOrdered, Quote, Strikethrough, Link as LinkIcon, Minus, Palette, Clipboard, Eraser, Type, IndentDecrease, IndentIncrease, Undo2, Redo2 } from "lucide-react";
 import { Indent } from "./Indent";
 
-
 const MenuBar = ({ editor, pasteAsTextMode, setPasteAsTextMode }: { editor: Editor | null, pasteAsTextMode: boolean, setPasteAsTextMode: (value: boolean) => void }) => {
     const [showColorPicker, setShowColorPicker] = useState(false)
     const [showSpecialChars, setShowSpecialChars] = useState(false)

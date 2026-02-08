@@ -1,4 +1,5 @@
 // extensions/Indent.ts
+"use client"
 import { Extension } from '@tiptap/core'
 
 declare module '@tiptap/core' {
