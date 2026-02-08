@@ -1,4 +1,8 @@
 import type { NextConfig } from "next";
+import path from "path";
+
+const floatingUiDir = path.dirname(require.resolve("@floating-ui/dom/package.json"));
+const floatingUiEsm = path.join(floatingUiDir, "dist", "floating-ui.dom.esm.js");
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -10,10 +14,15 @@ const nextConfig: NextConfig = {
     if (!isServer) {
       config.resolve.alias = {
         ...config.resolve?.alias,
-        '@floating-ui/dom': require.resolve('@floating-ui/dom/dist/floating-ui.dom.esm.js'),
+        "@floating-ui/dom": floatingUiEsm,
       };
     }
     return config;
+  },
+  turbopack: {
+    resolveAlias: {
+      "@floating-ui/dom": floatingUiEsm,
+    },
   },
 };
 
