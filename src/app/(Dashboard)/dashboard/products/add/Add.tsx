@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
+import dynamic from 'next/dynamic';
 import ProductBrand from '@/Components/Dashboard/Products/ProductBrand';
 import ProductCategories from '@/Components/Dashboard/Products/ProductCategories';
-import ProductDescription from '@/Components/Dashboard/Products/ProductDescription';
 import ProductFeatureImage from '@/Components/Dashboard/Products/ProductFeatureImage';
+const ProductDescription = dynamic(
+    () => import('@/Components/Dashboard/Products/ProductDescription'),
+    { ssr: false }
+);
 import ProductGallery from '@/Components/Dashboard/Products/ProductGallery';
 import ProductTags from '@/Components/Dashboard/Products/ProductTags';
 import SimpleProductTable from '@/Components/Dashboard/Products/SimpleProductTable';
