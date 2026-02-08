@@ -56,6 +56,7 @@ const AddProductPage = () => {
     const [tags, setTags] = useState<string[]>([]);
     const [selectedBrand, setSelectedBrand] = useState<string>('');
     const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
+    const [featured, setFeatured] = useState<boolean>(false);
     const [formKey, setFormKey] = useState(0);
 
     const clearForm = () => {
@@ -70,6 +71,7 @@ const AddProductPage = () => {
         setTags([]);
         setSelectedBrand('');
         setSelectedCategory([]);
+        setFeatured(false);
         setProductType('simple');
         setFormKey((k) => k + 1);
     };
@@ -107,7 +109,7 @@ const AddProductPage = () => {
         sku: sampleProductData?.inventory?.sku,
         status: ProductStatus.PUBLISH,
         visibility: ProductVisibility.VISIBLE,
-        featured: false,
+        featured,
         productType: productType === 'simple' ? ProductType.SIMPLE : ProductType.VARIABLE,
         price: Number(sampleProductData?.general?.regularPrice),
         downloadable: false,
@@ -231,6 +233,7 @@ const AddProductPage = () => {
             setSelectedBrand(product.productBrandId ?? '');
             setSelectedCategory(product.categoryIds ?? []);
             setTags(product.tags?.map((t: { name: string }) => t.name) ?? []);
+            setFeatured(product.featured ?? false);
         });
     }, [product]);
 
@@ -277,6 +280,15 @@ const AddProductPage = () => {
                         <div className='text-base border-b border-b-black/30 pb-2'>
                             Publish
                         </div>
+                        <label className='flex items-center gap-2 cursor-pointer mt-2'>
+                            <input
+                                type="checkbox"
+                                checked={featured}
+                                onChange={(e) => setFeatured(e.target.checked)}
+                                className='w-4 h-4 rounded border-black/30 cursor-pointer accent-primary'
+                            />
+                            <span className='text-sm'>Featured product</span>
+                        </label>
                         <button onClick={() => handlePublishProduct()} type='button' className='border border-primary bg-white text-primary hover:bg-primary hover:text-white transition-all duration-200 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 cursor-pointer px-4 py-2 rounded-sm text-xs w-fit mt-1 ml-auto'>
                             Publish
                         </button>

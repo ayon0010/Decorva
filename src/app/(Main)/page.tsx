@@ -4,8 +4,12 @@ import News from "@/Shared/Home/News";
 import Products from "@/Shared/Home/Products";
 import Slider from "@/Shared/Home/Slider";
 import Title from "@/Shared/Title/Title";
+import Offers from '@/Shared/Home/Offers';
 
-export default function Home() {
+export default async function Home() {
+  const products = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/product?featured=true`);
+  const productsData = await products.json();
+  console.log(productsData);
   return (
     <div>
       <Slider />
@@ -19,8 +23,8 @@ export default function Home() {
       </section>
       <section className="bg-[#F3F3F3] lg:py-20 py-10">
         <div className="layout global-padding">
-          <Title title="Today Deal" className="text-center" />
-          {/* <Offers /> */}
+          <Title title="Exclusive Deal" className="text-center" />
+          <Offers products={productsData.products ?? []} />
         </div>
       </section>
       <div className="lg:my-20 my-10">
