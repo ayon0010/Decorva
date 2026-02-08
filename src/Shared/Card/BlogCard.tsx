@@ -6,8 +6,8 @@ import Link from 'next/link';
 
 const BlogCard = () => {
     return (
-        <div className='w-fit h-fit space-y-6 max-w-[372px] w-full'>
-            <Image src={blogImage} alt="blog" width={372} height={232} className='object-cover aspect-[372/232]' />
+        <div className='h-fit space-y-6 w-full'>
+            <Image src={blogImage} alt="blog" width={372} height={232} className='object-cover aspect-[372/232] w-full' />
             <figcaption className='space-y-6'>
                 <div>
                     <h4 className='text-lg leading-[21px] font-medium text-black hover:text-primary transition-colors duration-300'>Post With Audio</h4>

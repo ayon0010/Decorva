@@ -15,10 +15,10 @@ const Offers = ({ products }: { products: { id: string, images: { url: string }[
                 slidesPerView={2}
                 breakpoints={{
                     640: {
-                        slidesPerView: 4,
+                        slidesPerView: 2,
                     },
                     1024: {
-                        slidesPerView: 8,
+                        slidesPerView: 4,
                     },
                 }}
                 navigation={true}
@@ -28,7 +28,7 @@ const Offers = ({ products }: { products: { id: string, images: { url: string }[
                 className="product-carousel hero-slider"
             >
                 {products?.map((product) => (
-                    <SwiperSlide key={product.id}>
+                    <SwiperSlide className='grid grid-cols-4 grid-rows-2 gap-6' key={product.id}>
                         <ProductCard product={product} />
                     </SwiperSlide>
                 ))}
