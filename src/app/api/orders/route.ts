@@ -16,7 +16,6 @@ export async function POST(req: Request) {
                 { status: 401 }
             );
         }
-
         const body = await req.json();
         const {
             billingFirstName,
@@ -167,7 +166,7 @@ export async function POST(req: Request) {
                         const variation = await prisma.productVariation.findUnique({
                             where: { id: orderItem.variationId },
                         });
-                        
+
                         if (variation && variation.manageStock && variation.stockQuantity != null) {
                             const newStock = Math.max(0, variation.stockQuantity - orderItem.quantity);
                             await prisma.productVariation.update({
@@ -183,7 +182,7 @@ export async function POST(req: Request) {
                         const product = await prisma.product.findUnique({
                             where: { id: orderItem.productId },
                         });
-                        
+
                         if (product && product.manageStock && product.stockQuantity != null) {
                             const newStock = Math.max(0, product.stockQuantity - orderItem.quantity);
                             await prisma.product.update({

@@ -103,7 +103,6 @@ model User {
   lastOrderDate       DateTime?
   cart                Cart?
   passwordResetTokens PasswordResetToken[]
-
   @@index([roles])
 }
 

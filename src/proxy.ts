@@ -9,7 +9,6 @@ export default auth(async function proxy(req) {
     const isLoggedIn = !!req.auth;
     const roles = req.auth?.user?.roles ?? [];
     const isAdmin = roles.includes("ADMIN");
-
     const pathName = req.nextUrl.pathname;
     const isProtectedRoute =
         pathName.startsWith("/my-account") ||

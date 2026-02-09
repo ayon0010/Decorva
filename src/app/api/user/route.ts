@@ -5,13 +5,20 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
     const session = await auth();
     const isAdmin = session?.user?.roles.includes('ADMIN');
+
     if (!isAdmin) {
         return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     }
+
     try {
-        const users = await prisma.user.findMany();
+        const users = await prisma.user.findMany({
+            include: {
+                orders: true,
+            }
+        });
         return NextResponse.json({ success: true, data: users }, { status: 200 });
     } catch (error) {
+        console.error('Failed to fetch users:', error);
         return NextResponse.json({ success: false, message: 'An error occurred while fetching users' }, { status: 500 });
     }
 }
