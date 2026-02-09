@@ -424,7 +424,7 @@ const Search = ({ isOpen, setIsSearchOpen }: { isOpen: boolean, setIsSearchOpen:
             >
                 <div className="flex flex-col gap-[10px] text-center">
                     <Image src={imageUrl} width={100} height={100} alt={product.name} className="w-full h-full aspect-[1] object-contain rounded-sm" />
-                    <span className="text-[#111] text-lg uppercase leading-[100%] font-bold line-clamp-2">{product.name}</span>
+                    <span className="text-[#111] text-lg uppercase leading-[100%] font-bold">{product.name}</span>
                 </div>
                 <span className="text-[#111] text-sm leading-[100%] text-center">{price} AED</span>
             </Link>
@@ -432,7 +432,7 @@ const Search = ({ isOpen, setIsSearchOpen }: { isOpen: boolean, setIsSearchOpen:
     };
 
     return (
-        <div className={`fixed top-0 left-0 right-0 w-full h-full bg-black/50 backdrop-blur-md z-[998] transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`} onClick={() => setIsSearchOpen(false)}>
+        <div className={`fixed top-0 left-0 right-0 w-full h-full bg-black/50 backdrop-blur-md z-[99989] transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`} onClick={() => setIsSearchOpen(false)}>
             <div ref={searchRef} className="bg-white lg:h-auto h-screen overflow-y-scroll p-6 space-y-6" style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 0, 0 0)" }} onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center justify-between gap-[10px]">
                     <button onClick={() => setIsSearchOpen(false)} className="flex items-center gap-2 text-[#111] text-sm cursor-pointer" aria-label="Close search">
@@ -521,7 +521,7 @@ const Search = ({ isOpen, setIsSearchOpen }: { isOpen: boolean, setIsSearchOpen:
                             loop={false}
                             navigation={true}
                             grabCursor={true}
-                            className={`search-swiper items-stretch! ${isLoading ? 'opacity-70' : ''}`}
+                            className={`${isLoading ? 'opacity-70' : ''} items-stretch!`}
                         >
                             {isLoading ? (
                                 Array.from({ length: 5 }).map((_, index) => (

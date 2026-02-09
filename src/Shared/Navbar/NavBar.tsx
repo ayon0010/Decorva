@@ -181,7 +181,6 @@ const NavBar = () => {
                 </div>
             </div>
 
-
             <SideCart isOpen={cartOpen} onClose={() => setCartOpen(!cartOpen)} />
 
             <PopUp isOpen={isMenuOpen} fn={handleMenuClose}>
