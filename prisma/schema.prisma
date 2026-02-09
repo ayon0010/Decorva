@@ -97,11 +97,12 @@ model User {
   marketingOptIn Boolean? @default(false)
 
   // Timestamps
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  lastLogin     DateTime?
-  lastOrderDate DateTime?
-  cart          Cart?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  lastLogin           DateTime?
+  lastOrderDate       DateTime?
+  cart                Cart?
+  passwordResetTokens PasswordResetToken[]
 
   @@index([roles])
 }
@@ -178,16 +179,16 @@ model Cart {
 }
 
 model Order {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  user        User          @relation(fields: [userId], references: [id])
-  userId      String        @db.ObjectId
-  orderNumber String        @unique
-  
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  user        User   @relation(fields: [userId], references: [id])
+  userId      String @db.ObjectId
+  orderNumber String @unique
+
   // Order Status
-  status      OrderStatus  @default(PENDING)
-  paymentStatus PaymentStatus @default(PENDING)
+  status        OrderStatus    @default(PENDING)
+  paymentStatus PaymentStatus  @default(PENDING)
   paymentMethod PaymentMethod?
-  
+
   // Billing Information (embedded)
   billingFirstName String
   billingLastName  String
@@ -200,7 +201,7 @@ model Order {
   billingState     String
   billingPostcode  String
   billingCountry   String
-  
+
   // Shipping Information (embedded)
   shippingFirstName String?
   shippingLastName  String?
@@ -210,37 +211,37 @@ model Order {
   shippingAddress1  String?
   shippingAddress2  String?
   shippingCity      String?
-  shippingState      String?
-  shippingPostcode   String?
-  shippingCountry    String?
-  
+  shippingState     String?
+  shippingPostcode  String?
+  shippingCountry   String?
+
   // Order Items
-  items        OrderItem[]
-  
+  items OrderItem[]
+
   // Pricing Breakdown
-  subtotal     Float       // Sum of all items before taxes and shipping
-  taxAmount    Float       @default(0)
-  shippingCost Float       @default(0)
-  discountAmount Float     @default(0)
-  total        Float       // Final total (subtotal + tax + shipping - discount)
-  
+  subtotal       Float // Sum of all items before taxes and shipping
+  taxAmount      Float @default(0)
+  shippingCost   Float @default(0)
+  discountAmount Float @default(0)
+  total          Float // Final total (subtotal + tax + shipping - discount)
+
   // Additional Information
-  orderNotes   String?     // Customer notes
-  adminNotes   String?     // Internal admin notes
-  customerIp   String?     // IP address for fraud detection
-  
+  orderNotes String? // Customer notes
+  adminNotes String? // Internal admin notes
+  customerIp String? // IP address for fraud detection
+
   // Payment Information
-  transactionId String?    // Payment gateway transaction ID
-  paidAt        DateTime?  // When payment was received
-  
+  transactionId String? // Payment gateway transaction ID
+  paidAt        DateTime? // When payment was received
+
   // Shipping Information
   trackingNumber String?
   shippedAt      DateTime?
   deliveredAt    DateTime?
-  
+
   // Timestamps
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@index([status])
@@ -249,30 +250,30 @@ model Order {
 }
 
 model OrderItem {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId     String   @db.ObjectId
-  
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId String @db.ObjectId
+
   // Product Information (snapshot at time of order)
-  productId   String   @db.ObjectId
-  productName String   // Snapshot of product name
-  productSku  String?  // Snapshot of SKU
-  
+  productId   String  @db.ObjectId
+  productName String // Snapshot of product name
+  productSku  String? // Snapshot of SKU
+
   // Variation Information (if applicable)
-  variationId String?  @db.ObjectId
+  variationId         String? @db.ObjectId
   variationAttributes String? // JSON string of selected attributes
-  
+
   // Pricing (snapshot at time of order)
-  price       Float    // Unit price at time of order
-  quantity    Int      @default(1)
-  subtotal    Float    // price * quantity
-  
+  price    Float // Unit price at time of order
+  quantity Int   @default(1)
+  subtotal Float // price * quantity
+
   // Product Image (snapshot)
-  imageUrl    String?
-  
+  imageUrl String?
+
   // Timestamps
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([orderId])
   @@index([productId])
@@ -510,4 +511,14 @@ model ContactMessage {
   message   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model PasswordResetToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  token     String   @unique
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+
+  @@index([userId])
 }

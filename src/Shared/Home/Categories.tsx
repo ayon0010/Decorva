@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 const Categories = () => {
     return (
         <div className={`global-padding layout flex md:flex-row flex-col md:items-center items-start justify-between md:gap-8 gap-10`}>
@@ -11,7 +13,7 @@ const Categories = () => {
                         </h2>
                     </div>
                     <button type="button" className="mt-9 border-b-primary border-b-2 text-sm leading-6 uppercase inline-block font-medium hover:text-primary transition-all duration-300 cursor-pointer">
-                        Shop Now
+                        <Link href="/shop/indoor-plants">Shop Now</Link>
                     </button>
                 </div>
                 <div className="absolute inset-0 z-40 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -26,7 +28,7 @@ const Categories = () => {
                         </h2>
                     </div>
                     <button type="button" className="mt-9 border-b-primary border-b-2 text-sm leading-6 uppercase inline-block font-medium hover:text-primary transition-all duration-300 cursor-pointer">
-                        Shop Now
+                        <Link href="/shop/outdoor-plants">Shop Now</Link>
                     </button>
                 </div>
                 <div className="absolute inset-0 z-40 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

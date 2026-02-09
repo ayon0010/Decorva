@@ -20,8 +20,8 @@ export const WishlistContext = createContext<{
   isLoading: boolean;
 }>({
   wishlistItems: [],
-  addToWishlist: () => {},
-  removeFromWishlist: () => {},
+  addToWishlist: () => { },
+  removeFromWishlist: () => { },
   isInWishlist: () => false,
   wishlistCount: 0,
   isLoading: false,

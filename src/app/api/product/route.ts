@@ -66,8 +66,46 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const slug = searchParams.get('slug');
-    
+    const recent = searchParams.get('recent');
+    const limit = searchParams.get('limit');
+    const q = searchParams.get('q')?.trim();
     try {
+
+        if (q) {
+            const products = await prisma.product.findMany({
+                where: {
+                    slug: { not: "" },
+                    OR: [
+                        { name: { contains: q, mode: "insensitive" } },
+                        { descriptionText: { contains: q, mode: "insensitive" } },
+                    ],
+                },
+                include: {
+                    images: true,
+                    categories: true,
+                    productBrand: true,
+                    tags: true,
+                },
+                take: 20,
+            });
+            return NextResponse.json({ success: true, products }, { status: 200 });
+        }
+
+        if (recent) {
+            const products = await prisma.product.findMany({
+                orderBy: {
+                    createdAt: 'desc',
+                },
+                include: {
+                    images: true,
+                    categories: true,
+                    productBrand: true,
+                    tags: true,
+                },
+                take: limit ? parseInt(limit) : 10,
+            });
+            return NextResponse.json({ success: true, products }, { status: 200 });
+        }
 
         if (slug) {
             const product = await prisma.product.findUnique({

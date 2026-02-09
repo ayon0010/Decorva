@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Heart, Menu, Search, ShoppingBag, User, X } from 'lucide-react';
+import { Heart, Menu, Search as SearchIcon, ShoppingBag, User, X } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react'
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import useCart from '../Hooks/useCart';
 import useWishlist from '../Hooks/useWishlist';
 import PopUp from '../PopUp/PopUp';
+import Search from './Search';
 
 const NavBar = () => {
     const pathname = usePathname();
@@ -17,6 +18,7 @@ const NavBar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const categoriesRef = useRef<HTMLDivElement>(null);
     const menuRef = useRef<HTMLDivElement>(null);
+    const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
 
     const handleCategoriesOpen = () => {
         setIsCategoriesOpen(!isCategoriesOpen);
@@ -96,8 +98,8 @@ const NavBar = () => {
                             <Link href={"/"}>Decorva</Link>
                         </h2>
                         <div className='relative flex-1 max-w-[500px] md:block hidden'>
-                            <input type="text" placeholder='Search' className='w-full border border-[#E1E1E1] rounded-full px-4 py-2 outline-[#E1E1E1]' />
-                            <Search className='cursor-pointer absolute right-4 top-1/2 -translate-y-1/2' type='button' />
+                            <input onClick={() => setIsSearchOpen(true)} type="text" placeholder='Search' className='w-full border border-[#E1E1E1] rounded-full px-4 py-2 outline-[#E1E1E1]' />
+                            <SearchIcon className='cursor-pointer absolute right-4 top-1/2 -translate-y-1/2' type='button' />
                         </div>
                         <div className='flex items-center md:gap-6 gap-4 md:border-r-[#E1E1E1] md:border-l-[#E1E1E1] md:border-l md:border-r md:p-10 p-5 self-stretch'>
                             <Link href={'/login'}><User className='cursor-pointer' /></Link>
@@ -189,9 +191,9 @@ const NavBar = () => {
                             <X className='w-4 h-4' />
                         </button>
                         <div className='mt-20 px-2'>
-                            <label htmlFor='search' className='text-sm font-medium relative'>
+                            <label onClick={() => setIsSearchOpen(true)} htmlFor='search' className='text-sm font-medium relative'>
                                 <input id='search' type="text" placeholder='Search' className='w-full border border-[#E1E1E1] rounded-full px-4 py-2 outline-black' />
-                                <Search className='cursor-pointer absolute right-4 top-1/2 -translate-y-1/2' type='button' />
+                                <SearchIcon className='cursor-pointer absolute right-4 top-1/2 -translate-y-1/2' type='button' />
                             </label>
                             <ul className='space-y-4 mt-4 px-4 text-sm leading-[24px] font-normal'>
                                 <li className='pb-2 border-b border-b-[#E1E1E1]'>
@@ -224,7 +226,7 @@ const NavBar = () => {
                 </div>
             </PopUp>
 
-
+            <Search isOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} />
         </>
     )
 }

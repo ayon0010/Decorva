@@ -11,6 +11,7 @@ import slider3 from '../../../public/slider3.webp';
 import Image from 'next/image';
 import 'swiper/css/effect-fade';
 import gsap from 'gsap';
+import Link from 'next/link';
 
 
 const Slider = () => {
@@ -28,7 +29,7 @@ const Slider = () => {
     // Animation initiale au chargement
     useEffect(() => {
         const tl = gsap.timeline();
-        
+
         if (titleRef1.current) {
             gsap.set(titleRef1.current, {
                 x: -window.innerWidth,
@@ -41,7 +42,7 @@ const Slider = () => {
                 ease: "power3.out"
             });
         }
-        
+
         if (descRef1.current) {
             gsap.set(descRef1.current, {
                 x: -window.innerWidth,
@@ -54,7 +55,7 @@ const Slider = () => {
                 ease: "power3.out"
             }, "<0.1");
         }
-        
+
         if (buttonRef1.current) {
             gsap.set(buttonRef1.current, {
                 x: -window.innerWidth,
@@ -74,7 +75,7 @@ const Slider = () => {
         const titles = [titleRef1.current, titleRef2.current, titleRef3.current];
         const descriptions = [descRef1.current, descRef2.current, descRef3.current];
         const buttons = [buttonRef1.current, buttonRef2.current, buttonRef3.current];
-        
+
         const currentTitle = titles[activeIndex];
         const currentDesc = descriptions[activeIndex];
         const currentButton = buttons[activeIndex];
@@ -130,7 +131,7 @@ const Slider = () => {
                 });
             }
         });
-        
+
         descriptions.forEach((desc, index) => {
             if (desc && index !== activeIndex) {
                 gsap.set(desc, {
@@ -139,7 +140,7 @@ const Slider = () => {
                 });
             }
         });
-        
+
         buttons.forEach((button, index) => {
             if (button && index !== activeIndex) {
                 gsap.set(button, {
@@ -193,7 +194,7 @@ const Slider = () => {
                             <h1 ref={titleRef1} className='uppercase text-black font-bold global-h1' >Top Sale</h1>
                             <p ref={descRef1} className='lg:text-[20px] text-base text-black leading-[100%]'>Discount <span className='text-primary'>20% Off</span> On All Products</p>
                             <button ref={buttonRef1} type='button' className='bg-primary text-white uppercase w-fit font-medium text-[15px] leading-[65px] px-8 rounded-[40px]'>
-                                Discover Now
+                                <Link href="/shop">Discover Now</Link>
                             </button>
                         </div>
                     </article>
@@ -216,7 +217,7 @@ const Slider = () => {
                             <h2 ref={titleRef2} className='uppercase text-black font-bold global-h1' >Big Sale</h2>
                             <p ref={descRef2} className='lg:text-[20px] text-base text-black leading-[100%]'>Discount <span className='text-primary'>20% Off</span> On All Products</p>
                             <button ref={buttonRef2} type='button' className='bg-primary text-white uppercase w-fit font-medium text-[15px] leading-[65px] px-8 rounded-[40px]'>
-                                Discover Now
+                                <Link href="/shop">Discover Now</Link>
                             </button>
                         </div>
                     </article>
@@ -239,7 +240,7 @@ const Slider = () => {
                             <h2 ref={titleRef3} className='uppercase text-black font-bold global-h1' >Lovely Plants</h2>
                             <p ref={descRef3} className='lg:text-[20px] text-base text-black leading-[100%]'>Discount <span className='text-primary'>20% Off</span> On All Products</p>
                             <button ref={buttonRef3} type='button' className='bg-primary text-white uppercase w-fit font-medium text-[15px] leading-[65px] px-8 rounded-[40px]'>
-                                Discover Now
+                                <Link href="/shop">Discover Now</Link>
                             </button>
                         </div>
                     </article>
