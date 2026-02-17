@@ -15,7 +15,6 @@ const formatDate = (date: Date | string | null): string => {
 
 const AllCustomers = () => {
 
-
     const { data: users, isLoading, error } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {

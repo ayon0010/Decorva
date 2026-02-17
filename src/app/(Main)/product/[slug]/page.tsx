@@ -232,7 +232,7 @@ const ProductPage = () => {
                                     images?.map((img: { id: string, url: string }, i: number) => {
                                         return (
                                             <SwiperSlide key={i} className='w-full h-full'>
-                                                <div className='w-full h-full relative flex items-center justify-center aspect-video'>
+                                                <div className='w-full h-full relative flex items-center justify-center aspect-video bg-red-300'>
                                                     <ImageMagnifier
                                                         src={img?.url}
                                                         alt={'ayon'}

@@ -81,7 +81,7 @@ const ImageMagnifier: React.FC<ImageMagnifierProps> = ({
     return (
         <div
             ref={imgRef}
-            className={`relative inline-block cursor-none ${className}`}
+            className={`relative inline-block cursor-none ${className} w-full! h-full!`}
             style={{ width, height }}
             onMouseEnter={handleMouseEnter}
             onMouseMove={handleMouseMove}
@@ -96,7 +96,7 @@ const ImageMagnifier: React.FC<ImageMagnifierProps> = ({
                 alt={alt}
                 width={width}
                 height={height}
-                className="object-cover w-full h-full"
+                className="w-full! h-full! object-cover"
                 priority
             />
 
