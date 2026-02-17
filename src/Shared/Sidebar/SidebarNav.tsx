@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Book,
   ChartBar,
   CreditCard,
   Home,
@@ -88,6 +89,17 @@ export default function SidebarNav() {
         />
       </div>
 
+
+      <div>
+        <Dropdown
+          label="Blog"
+          icon={<Book className="w-4 h-4" />}
+          items={[
+            { label: "All posts", href: "/dashboard/blog/all" },
+            { label: "Add post", href: "/dashboard/blog/add" },
+          ]}
+        />
+      </div>
 
       <div>
         <Dropdown
