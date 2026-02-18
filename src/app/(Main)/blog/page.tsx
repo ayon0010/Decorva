@@ -9,6 +9,10 @@ export const metadata: Metadata = {
     description: "Decorva news, trends and interior design tips. Inspiration and ideas to beautify your home.",
 };
 
+// En production, sans ceci la page est générée au build avec les données du moment.
+// On force un rendu dynamique pour toujours afficher tous les articles à jour.
+export const dynamic = 'force-dynamic';
+
 const Blog = async () => {
     const blogs = await getBlogs();
     return (
