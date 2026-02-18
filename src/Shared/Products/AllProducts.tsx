@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useMemo, useState, useRef } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import ProductCard from '../Card/ProductCard'
 import ReactRangeSliderInput from 'react-range-slider-input'
 import 'react-range-slider-input/dist/style.css';
@@ -81,32 +81,38 @@ const AllProducts = () => {
     }, [category, currentCategory, allCategories])
 
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
-    const priceRangeInitialized = useRef(false);
+
+    // Produits utilisés pour le min/max du filtre prix : tous les produits ou seulement ceux des catégories sélectionnées
+    const productsForPriceRange = useMemo(() => {
+        if (!categoryProducts || categoryProducts.length === 0) return [];
+        if (selectedCategories.length === 0) return categoryProducts;
+        return categoryProducts.filter((product: { categoryIds?: string[]; categories?: Array<{ id: string }> }) => {
+            const productCategoryIds = product.categoryIds ?? (product.categories?.map((c: { id: string }) => c.id) ?? []);
+            return productCategoryIds.some((catId: string) => selectedCategories.includes(catId));
+        });
+    }, [categoryProducts, selectedCategories]);
 
     const { minPrice, maxPrice } = useMemo(() => {
-        if (!categoryProducts || categoryProducts.length === 0) {
+        if (!productsForPriceRange || productsForPriceRange.length === 0) {
             return { minPrice: 0, maxPrice: 0 };
         }
-
-        const prices = categoryProducts.map((p: { price: number }) => Number(p?.price));
+        const prices = productsForPriceRange.map((p: { price: number }) => Number(p?.price));
         return {
             minPrice: Math.min(...prices),
             maxPrice: Math.max(...prices)
         };
-    }, [categoryProducts]);
+    }, [productsForPriceRange]);
 
+    // Réinitialiser la plage de prix quand les produits changent (ex. changement de catégorie)
     useEffect(() => {
-        if (minPrice > 0 && maxPrice > 0 && !priceRangeInitialized.current) {
-            priceRangeInitialized.current = true;
-            // Initialize price range from product data - necessary for syncing external data
+        if (minPrice > 0 && maxPrice > 0) {
             setPriceRange([minPrice, maxPrice]);
         }
     }, [minPrice, maxPrice]);
 
-    // Reset filters when category changes - necessary for syncing with URL params
+    // Reset category filters when URL category changes
     useEffect(() => {
         setSelectedCategories([]);
-        priceRangeInitialized.current = false;
     }, [category]);
 
     const filteredProducts = useMemo(() => {
@@ -204,7 +210,7 @@ const AllProducts = () => {
                 </div>
                 <div className='sticky top-[80px] w-1/4 hidden flex-col gap-10 md:flex '>
                     {
-                        categoryProducts && categoryProducts.length > 1 && (
+                        filteredProducts && filteredProducts.length > 1 && (
                             <div>
                                 <h3 className='filter-heading'>Filter By Price</h3>
                                 <ReactRangeSliderInput min={minPrice}
