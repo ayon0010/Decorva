@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import React from 'react'
 import blogImage from '@/../public/blog2.webp';
+import ShareButtons from '@/Shared/ShareButtons/ShareButtons';
 
 
 export async function generateStaticParams() {
@@ -59,9 +60,15 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
                             priority
                         />
                         {/* Content */}
-                        <div>
-                            
+                        <div className='prose prose-lg max-w-none prose-img:aspect-[16/9] prose-img:object-cover prose-img:w-auto prose-img:h-[400px]'>
+                            <div dangerouslySetInnerHTML={{ __html: blog.blog?.contentHtml ?? '' }} />
                         </div>
+                        {/* Share */}
+                        <ShareButtons
+                            url={`/blog/${slug}`}
+                            title={blog.blog?.title ?? ''}
+                            description={blog.blog?.content ?? ''}
+                        />
                     </div>
                     <div className='w-full md:w-1/4'></div>
                 </div>
