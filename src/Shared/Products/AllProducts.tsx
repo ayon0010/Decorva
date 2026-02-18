@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useRef } from 'react'
 import ProductCard from '../Card/ProductCard'
 import ReactRangeSliderInput from 'react-range-slider-input'
 import 'react-range-slider-input/dist/style.css';
@@ -13,10 +13,9 @@ const AllProducts = () => {
     const params = useParams();
     const category = params.slug;
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
     const url = category ? `/api/category/${category}` : '/api/product';
-
-    const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
 
     const { data: categoryProducts, isLoading } = useQuery({
         queryKey: ['categoryProducts', category],
@@ -27,6 +26,19 @@ const AllProducts = () => {
         },
         staleTime: 60 * 60 * 1000, // Cache for 1 hour
     })
+
+    const { data: categories = [], isLoading: isCategoriesLoading } = useQuery({
+        queryKey: ['categories'],
+        queryFn: async () => {
+            const response = await fetch('/api/category');
+            const data = await response.json();
+            return data.categories ?? [];
+        },
+        staleTime: 60 * 60 * 1000, // Cache for 1 hour
+    })
+
+    const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
+    const priceRangeInitialized = useRef(false);
 
     const { minPrice, maxPrice } = useMemo(() => {
         if (!categoryProducts || categoryProducts.length === 0) {
@@ -40,65 +52,92 @@ const AllProducts = () => {
         };
     }, [categoryProducts]);
 
-
-
     useEffect(() => {
-        if (minPrice > 0 || maxPrice > 0) {
+        if (minPrice > 0 && maxPrice > 0 && !priceRangeInitialized.current) {
+            priceRangeInitialized.current = true;
+            // Initialize price range from product data - necessary for syncing external data
             setPriceRange([minPrice, maxPrice]);
         }
     }, [minPrice, maxPrice]);
+
+    // Reset filters when category changes - necessary for syncing with URL params
+    useEffect(() => {
+        setSelectedCategories([]);
+        priceRangeInitialized.current = false;
+    }, [category]);
 
     const filteredProducts = useMemo(() => {
         if (!categoryProducts) return [];
 
         const [min, max] = priceRange;
-        return categoryProducts.filter((product: { price: number }) => {
+        return categoryProducts.filter((product: { 
+            price: number; 
+            categoryIds?: string[];
+            categories?: Array<{ id: string }>;
+        }) => {
             const price = Number(product?.price);
-            return price >= min && price <= max;
+            const priceMatch = price >= min && price <= max;
+            
+            // If no categories selected, show all products (respecting price filter)
+            if (selectedCategories.length === 0) {
+                return priceMatch;
+            }
+            
+            // Get category IDs from either categoryIds array or categories objects
+            const productCategoryIds = product.categoryIds ?? 
+                (product.categories?.map((cat: { id: string }) => cat.id) ?? []);
+            
+            // Check if product belongs to any selected category
+            const categoryMatch = productCategoryIds.some((catId: string) => 
+                selectedCategories.includes(catId)
+            );
+            
+            return priceMatch && categoryMatch;
         });
-    }, [categoryProducts, priceRange]);
+    }, [categoryProducts, priceRange, selectedCategories]);
 
 
     const handleChange = (val: [number, number]) => {
         setPriceRange(val);
     }
 
+    const handleCategoryToggle = (categoryId: string) => {
+        setSelectedCategories((prev) => {
+            if (prev.includes(categoryId)) {
+                return prev.filter((id) => id !== categoryId);
+            } else {
+                return [...prev, categoryId];
+            }
+        });
+    }
 
-    // const renderCategories = (categories) => {
-    //     const logSelectedCategoryIds = () => {
-    //         const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
-    //         const selectedIds = Array.from(checkedBoxes).map(cb => cb.value)?.length > 0 ? Array.from(checkedBoxes).map(cb => cb.value) : id;
-    //         setIds(selectedIds);
-    //     };
+    const renderCategories = (categoriesList: typeof categories, level: number = 0) => {
+        return (
+            <ul className={`space-y-3 ${level > 0 ? 'ml-6' : ''}`}>
+                {categoriesList.map((cat: { id: string; name: string; slug: string; children?: typeof categories }) => (
+                    <li key={cat.id} className="flex flex-col">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                className="peer w-3 h-3 cursor-pointer accent-black"
+                                checked={selectedCategories.includes(cat.id)}
+                                onChange={() => handleCategoryToggle(cat.id)}
+                            />
+                            <span className="text-[#999] font-semibold text-[14px] leading-[16px] uppercase peer-checked:text-[#111111bf]">
+                                {cat.name}
+                            </span>
+                        </label>
+                        {Array.isArray(cat.children) && cat.children.length > 0 && (
+                            <div className="mt-3">
+                                {renderCategories(cat.children, level + 1)}
+                            </div>
+                        )}
+                    </li>
+                ))}
+            </ul>
+        );
+    };
 
-    //     return (
-    //         <ul className="space-y-3">
-    //             {categories.map((cat) => (
-    //                 <li key={cat.id} className="flex flex-col">
-    //                     {/* Checkbox + Label */}
-    //                     <label className="flex items-center gap-2 cursor-pointer">
-    //                         <input
-    //                             type="checkbox"
-    //                             className="peer w-3 h-3 cursor-pointer accent-black"
-    //                             value={cat.id}
-    //                             onChange={logSelectedCategoryIds}
-    //                         />
-    //                         <span className="text-[#999] font-semibold text-[14px] leading-[16px] uppercase peer-checked:text-[#111111bf]">
-    //                             {cat.name}
-    //                         </span>
-    //                     </label>
-
-    //                     {/* Children */}
-    //                     {Array.isArray(cat.children) && cat.children.length > 0 && (
-    //                         <div className="ml-6 mt-3">
-    //                             {renderCategories(cat.children)}
-    //                         </div>
-    //                     )}
-    //                 </li>
-    //             ))}
-    //         </ul>
-    //     );
-    // };
 
     if (categoryProducts && categoryProducts.length === 0) return <div>No products found</div>
 
@@ -114,9 +153,10 @@ const AllProducts = () => {
                                 <ProductLoader key={index} />
                             ))
                             :
-                            filteredProducts && filteredProducts.length > 0 && filteredProducts.map((product: { id: string, images: { url: string }[], name: string, price: number, regularPrice: number, salePrice: number, slug: string }) => (
+                            filteredProducts && filteredProducts.length > 0 ? filteredProducts.map((product: { id: string, images: { url: string }[], name: string, price: number, regularPrice: number, salePrice: number, slug: string }) => (
                                 <ProductCard key={product.id} product={product} />
-                            ))
+                            )): 
+                            <div className=''>No products found</div>
                     }
                 </div>
                 <div className='sticky top-[80px] w-1/4 hidden flex-col gap-10 md:flex '>
@@ -138,18 +178,34 @@ const AllProducts = () => {
                     }
                     <div>
                         <h3 className='filter-heading'>Filter By Category</h3>
+                        {isCategoriesLoading ? (
+                            <div className='text-sm text-gray-500 mt-4'>Loading categories...</div>
+                        ) : categories.length > 0 ? (
+                            <div className='mt-4'>
+                                {renderCategories(categories)}
+                            </div>
+                        ) : (
+                            <div className='text-sm text-gray-500 mt-4'>No categories available</div>
+                        )}
                     </div>
                 </div>
             </div>
             <PopUp isOpen={isOpen} fn={setIsOpen}>
                 <div className='w-full h-full flex items-center justify-center'>
-                    <div className='w-[90%] h-[70vh] bg-white rounded-sm p-4 relative' onClick={(e) => e.stopPropagation()}>
+                    <div className='w-[90%] h-[80vh] bg-white rounded-sm p-4 relative' onClick={(e) => e.stopPropagation()}>
                         <button type='button' title='Close' onClick={() => setIsOpen(false)} className='absolute top-4 right-4 border rounded-full p-1 cursor-pointer'>
                             <X className='w-4 h-4' />
                         </button>
                         <div className='pt-10 h-full flex flex-col justify-between gap-6'>
                             <div className='h-[75%] overflow-y-auto scroll-bar'>
-                                <h3 className='filter-heading global-b-bottom'>Filter By Category</h3>
+                                <h3 className='filter-heading global-b-bottom mb-4'>Filter By Category</h3>
+                                {isCategoriesLoading ? (
+                                    <div className='text-sm text-gray-500'>Loading categories...</div>
+                                ) : categories.length > 0 ? (
+                                    renderCategories(categories)
+                                ) : (
+                                    <div className='text-sm text-gray-500'>No categories available</div>
+                                )}
                             </div>
                             <div className='h-[25%]'>
                                 <h3 className='filter-heading'>Filter By Price</h3>
@@ -168,7 +224,6 @@ const AllProducts = () => {
                 </div>
             </PopUp>
         </>
-
     )
 }
 

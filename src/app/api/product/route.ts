@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateUniqueSku } from "@/lib/product";
+import { UserRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 function parseDateTime(value: unknown): Date | null {
@@ -144,7 +145,7 @@ export async function GET(req: Request) {
 
 export async function DELETE(req: Request) {
     const session = await auth();
-    const isAdmin = session?.user?.roles?.includes('ADMIN');
+    const isAdmin = session?.user?.roles?.includes(UserRole.ADMIN);
     if (!isAdmin) {
         return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     }
