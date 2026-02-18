@@ -16,7 +16,7 @@ const BlogCard = ({ blog }: { blog: BlogPost }) => {
 
     return (
         <div className='h-fit space-y-6 w-full'>
-            <Image src={blog.featuredImage ?? blogImage} alt="blog" width={372} height={232} className='object-cover aspect-[372/232] w-full' />
+            <Image src={blog.featuredImage ?? blogImage} alt={blog.title || 'Blog Image'} width={372} height={232} className='object-cover aspect-[372/232] w-full' />
             <figcaption className='space-y-6'>
                 <div className='space-y-2'>
                     <h4 className='text-lg leading-[21px] font-medium text-black hover:text-primary transition-colors duration-300'>{blog.title}</h4>
