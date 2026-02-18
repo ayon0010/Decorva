@@ -27,7 +27,20 @@ const AllProducts = () => {
         staleTime: 60 * 60 * 1000, // Cache for 1 hour
     })
 
-    const { data: categories = [], isLoading: isCategoriesLoading } = useQuery({
+    // Fetch current category with children when category exists
+    const { data: currentCategory } = useQuery({
+        queryKey: ['currentCategory', category],
+        queryFn: async () => {
+            if (!category) return null;
+            const response = await fetch(`/api/category/${category}`);
+            const data = await response.json();
+            return data.category ?? null;
+        },
+        enabled: !!category,
+        staleTime: 60 * 60 * 1000, // Cache for 1 hour
+    })
+
+    const { data: allCategories = [], isLoading: isCategoriesLoading } = useQuery({
         queryKey: ['categories'],
         queryFn: async () => {
             const response = await fetch('/api/category');
@@ -36,6 +49,36 @@ const AllProducts = () => {
         },
         staleTime: 60 * 60 * 1000, // Cache for 1 hour
     })
+
+    // Filter categories to show only children of current category if category exists
+    const categories = useMemo(() => {
+        if (!category || !currentCategory) {
+            return allCategories;
+        }
+        
+        // If current category has children, return them directly
+        if (currentCategory.children && currentCategory.children.length > 0) {
+            return currentCategory.children;
+        }
+        
+        // Otherwise, find children in the allCategories tree
+        const findCategoryChildren = (cats: typeof allCategories, targetId: string): typeof allCategories => {
+            for (const cat of cats) {
+                if (cat.id === targetId) {
+                    return cat.children || [];
+                }
+                if (cat.children && cat.children.length > 0) {
+                    const found = findCategoryChildren(cat.children, targetId);
+                    if (found.length > 0) {
+                        return found;
+                    }
+                }
+            }
+            return [];
+        };
+        
+        return findCategoryChildren(allCategories, currentCategory.id);
+    }, [category, currentCategory, allCategories])
 
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
     const priceRangeInitialized = useRef(false);

@@ -15,6 +15,11 @@ export async function GET(request: Request,
                         images: true,
                     }
                 },
+                children: {
+                    include: {
+                        children: true, // Recursive children
+                    }
+                },
             }
         });
         return NextResponse.json({ success: true, category }, { status: 200 });
