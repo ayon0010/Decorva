@@ -117,7 +117,7 @@ body {
 }
 
 
-.footer-title {
+.footer-title, .footer-title-mbl {
   font-size: 14px;
   line-height: 16px;
   margin-bottom: 31px;
@@ -136,15 +136,7 @@ body {
   bottom: 0;
   left: 0;
 }
-.footer-title-mbl {
-  font-size: 14px;
-  line-height: 16px;
-  margin-bottom: 31px;
-  padding-bottom: 10px;
-  text-transform: uppercase;
-  font-weight: 500;
-  position: relative;
-}
+
 
 .footer-title-mbl::before {
   content: "";
@@ -153,7 +145,15 @@ body {
   background-color: #222222;
   position: absolute;
   bottom: 0;
-  right: 0;
+  left: 0;
+}
+
+
+@media screen and (max-width:768px) {
+  .footer-title-mbl::before {
+    left: auto;
+    right: 0;
+  }
 }
 
 
