@@ -19,7 +19,7 @@ const ProductGallery = ({
   const hasSyncedDefaultRef = useRef(false);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
 
-  // Show default images when product loads (edit mode). Batched to satisfy React Compiler.
+  // Showw default images when product loads (edit mode). Batched to satisfy React Compiler.
   useEffect(() => {
     if (!defaultImageUrls?.length || hasSyncedDefaultRef.current) return;
     hasSyncedDefaultRef.current = true;
